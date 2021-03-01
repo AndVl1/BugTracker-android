@@ -1,4 +1,4 @@
-package ru.andvl.bugtracker.presentation.ui.login
+package ru.andvl.bugtracker.presentation.ui.auth
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

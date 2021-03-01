@@ -13,6 +13,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.andvl.bugtracker.network.ApiHelper
+import ru.andvl.bugtracker.network.ApiHelperImpl
 import ru.andvl.bugtracker.network.ApiService
 import ru.andvl.bugtracker.network.RequestInterceptor
 import javax.inject.Singleton
@@ -46,7 +47,7 @@ object NetworkModule {
 	fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit {
 		return Retrofit.Builder()
 			.client(okHttpClient)
-			.baseUrl("")
+			.baseUrl("http://localhost:5000")
 			.addConverterFactory(GsonConverterFactory.create())
 			.addCallAdapterFactory(CoroutinesResponseCallAdapterFactory())
 			.build()
@@ -60,6 +61,6 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
-	fun providesApiHelper(apiHelper: ApiHelper): ApiHelper = apiHelper
+	fun providesApiHelper(apiHelper: ApiHelperImpl): ApiHelper = apiHelper
 
 }

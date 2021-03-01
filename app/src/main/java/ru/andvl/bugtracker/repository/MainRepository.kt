@@ -7,6 +7,7 @@ import javax.inject.Inject
 class MainRepository @Inject constructor(
 	private val apiHelper: ApiHelper
 ) : Repository {
+
 	suspend fun login(user: LoginUser) = apiHelper.login(user)
 
 	suspend fun register(user: LoginUser) = apiHelper.register(user)

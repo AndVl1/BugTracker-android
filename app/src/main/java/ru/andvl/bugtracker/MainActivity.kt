@@ -7,13 +7,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import dagger.hilt.android.AndroidEntryPoint
-import ru.andvl.bugtracker.presentation.ui.login.LoginPage
+import ru.andvl.bugtracker.navigation.BugTrackerApp
+import ru.andvl.bugtracker.presentation.ui.auth.LoginPage
 import ru.andvl.bugtracker.ui.theme.BugTrackerTheme
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-	val mainViewModel: MainViewModel by viewModels()
+	private val mainViewModel: MainViewModel by viewModels()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -24,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 					color = MaterialTheme.colors.background,
 
 					) {
-					LoginPage(viewModel = mainViewModel)
+					BugTrackerApp(viewModel = mainViewModel)
 				}
 			}
 		}
