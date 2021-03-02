@@ -1,8 +1,8 @@
 package ru.andvl.bugtracker.repository
 
+import javax.inject.Inject
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.network.ApiHelper
-import javax.inject.Inject
 
 class MainRepository @Inject constructor(
     private val apiHelper: ApiHelper

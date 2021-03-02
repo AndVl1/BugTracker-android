@@ -3,8 +3,8 @@ package ru.andvl.bugtracker
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ru.andvl.bugtracker.repository.MainRepository
 import javax.inject.Inject
+import ru.andvl.bugtracker.repository.MainRepository
 
 @HiltViewModel
 class MainViewModel @Inject constructor(

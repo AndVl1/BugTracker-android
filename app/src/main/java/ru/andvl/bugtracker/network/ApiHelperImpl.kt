@@ -1,9 +1,9 @@
 package ru.andvl.bugtracker.network
 
 import com.skydoves.sandwich.ApiResponse
+import javax.inject.Inject
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.model.User
-import javax.inject.Inject
 
 class ApiHelperImpl @Inject constructor(
     private val apiService: ApiService
