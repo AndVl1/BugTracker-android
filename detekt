@@ -25,4 +25,4 @@ else
   $DETEKT_BIN --config .github/workflows/assets/detekt.yml "$@"
 fi
 
-echo "Done!
+echo "Done!"
