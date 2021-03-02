@@ -9,6 +9,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -25,8 +26,8 @@ import ru.andvl.bugtracker.R
 fun LoginPage(viewModel: MainViewModel) {
 	Column(
 		modifier = Modifier
-			.fillMaxWidth()
-			.fillMaxHeight(),
+				.fillMaxWidth()
+				.fillMaxHeight(),
 		verticalArrangement = Arrangement.Center,
 		horizontalAlignment = Alignment.CenterHorizontally,
 	) {
@@ -49,11 +50,13 @@ fun LoginBlock(
 	onRegisterClickListener: () -> Unit,
 ) {
 
+	val layoutPadding = dimensionResource(id = R.dimen.auth_padding)
+
 	ConstraintLayout(
 //		modifier = Modifier.fillMaxWidth().fillMaxHeight(),
 		modifier = Modifier
-			.padding(16.dp)
-			.fillMaxHeight()
+				.padding(layoutPadding)
+				.fillMaxHeight()
 	) {
 		val (
 			imageRefs,
@@ -63,11 +66,15 @@ fun LoginBlock(
 			registerRefs
 		) = createRefs()
 
+		val elementsMargin = dimensionResource(id = R.dimen.elements_margin)
+		val buttonHeight = dimensionResource(id = R.dimen.auth_button_height)
+		val imageMarginTop = dimensionResource(id = R.dimen.auth_content_margin_top)
+
 		Image(
 			painter = painterResource(id = R.drawable.bug),
-			contentDescription = "Bug image",
+			contentDescription = stringResource(R.string.app_icon),
 			modifier = Modifier.constrainAs(imageRefs) {
-				top.linkTo(parent.top, margin = 128.dp)
+				top.linkTo(parent.top, margin = imageMarginTop)
 				start.linkTo(parent.start)
 				end.linkTo(parent.end)
 			}
@@ -80,12 +87,12 @@ fun LoginBlock(
 			},
 			label = { Text(text = stringResource(R.string.login_text_field)) },
 			modifier = Modifier
-				.constrainAs(loginRefs) {
-					top.linkTo(imageRefs.bottom, margin = 8.dp)
-					start.linkTo(parent.start)
-					end.linkTo(parent.end)
-				}
-				.fillMaxWidth(),
+					.constrainAs(loginRefs) {
+						top.linkTo(imageRefs.bottom, margin = elementsMargin)
+						start.linkTo(parent.start)
+						end.linkTo(parent.end)
+					}
+					.fillMaxWidth(),
 		)
 
 		TextField(
@@ -95,12 +102,12 @@ fun LoginBlock(
 			},
 			label = { Text(text = stringResource(R.string.password_text_field)) },
 			modifier = Modifier
-				.constrainAs(passRefs) {
-					top.linkTo(loginRefs.bottom, margin = 8.dp)
-					start.linkTo(loginRefs.start)
-					end.linkTo(loginRefs.end)
-				}
-				.fillMaxWidth(),
+					.constrainAs(passRefs) {
+						top.linkTo(loginRefs.bottom, elementsMargin)
+						start.linkTo(loginRefs.start)
+						end.linkTo(loginRefs.end)
+					}
+					.fillMaxWidth(),
 			visualTransformation = if (passwordVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
 			trailingIcon = {
 				IconButton(onClick = {
@@ -117,13 +124,13 @@ fun LoginBlock(
 		Button(
 			onClick = { /*TODO*/ },
 			modifier = Modifier
-				.constrainAs(buttonRefs) {
-					top.linkTo(passRefs.bottom, margin = 8.dp)
-					end.linkTo(passRefs.end)
-					start.linkTo(passRefs.start)
-				}
-				.fillMaxWidth()
-				.height(56.dp),
+					.constrainAs(buttonRefs) {
+						top.linkTo(passRefs.bottom, margin = elementsMargin)
+						end.linkTo(passRefs.end)
+						start.linkTo(passRefs.start)
+					}
+					.fillMaxWidth()
+					.height(buttonHeight),
 		) {
 			Text(text = stringResource(R.string.login_button_text))
 		}
