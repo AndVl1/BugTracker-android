@@ -8,16 +8,16 @@ import ru.andvl.bugtracker.model.User
 
 interface ApiService {
 
-	@POST("/login")
-	suspend fun login(
-		user: LoginUser,
-	): ApiResponse<User>
+    @POST("/login")
+    suspend fun login(
+        user: LoginUser,
+    ): ApiResponse<User>
 
-	@POST("/register")
-	suspend fun register(
-		user: LoginUser,
-	): ApiResponse<User>
+    @POST("/register")
+    suspend fun register(
+        user: LoginUser,
+    ): ApiResponse<User>
 
-	@GET("/user")
-	suspend fun getUserData(): ApiResponse<User>
+    @GET("/user")
+    suspend fun getUserData(): ApiResponse<User>
 }

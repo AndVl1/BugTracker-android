@@ -10,11 +10,11 @@ import ru.andvl.bugtracker.presentation.ui.auth.LoginPage
 
 @Composable
 fun BugTrackerApp(viewModel: MainViewModel) {
-	val navController = rememberNavController()
-	val actions = remember(navController) { Actions(navController) }
-	NavHost(navController = navController, startDestination = "login"){
-		composable("login") {
-			LoginPage(viewModel = viewModel)
-		}
-	}
+    val navController = rememberNavController()
+    val actions = remember(navController) { Actions(navController) }
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") {
+            LoginPage(viewModel = viewModel)
+        }
+    }
 }

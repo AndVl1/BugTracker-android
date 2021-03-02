@@ -12,9 +12,9 @@ import ru.andvl.bugtracker.repository.MainRepository
 @InstallIn(ViewModelComponent::class)
 object RepositoryModule {
 
-	@Provides
-	@ViewModelScoped
-	fun providesMainRepository(
-		apiHelper: ApiHelper
-	) = MainRepository(apiHelper)
+    @Provides
+    @ViewModelScoped
+    fun providesMainRepository(
+        apiHelper: ApiHelper
+    ) = MainRepository(apiHelper)
 }

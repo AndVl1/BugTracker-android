@@ -8,25 +8,29 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-	private val mainRepository: MainRepository
+    private val mainRepository: MainRepository
 ) : ViewModel() {
-	val login = mutableStateOf("")
-	val password = mutableStateOf("")
-	val passwordVisibility = mutableStateOf(false)
+    val login = mutableStateOf("")
+    val password = mutableStateOf("")
+    val passwordVisibility = mutableStateOf(false)
 
-	fun onLoginChanged(login: String) {
-		this.login.value = login
-	}
+    fun onLoginChanged(login: String) {
+        this.login.value = login
+    }
 
-	fun onPasswordChanged(password: String) {
-		this.password.value = password
-	}
+    fun onPasswordChanged(password: String) {
+        this.password.value = password
+    }
 
-	fun onPasswordVisibilityChanged() {
-		passwordVisibility.value = !passwordVisibility.value
-	}
+    fun onPasswordVisibilityChanged() {
+        passwordVisibility.value = !passwordVisibility.value
+    }
 
-	fun onLoginButtonClickListener() {}
+    fun onLoginButtonClickListener() {
+        /* TODO */
+    }
 
-	fun onRegisterClickListener() {}
+    fun onRegisterClickListener() {
+        /* TODO */
+    }
 }

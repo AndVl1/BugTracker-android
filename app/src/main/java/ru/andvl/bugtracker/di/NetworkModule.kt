@@ -22,45 +22,44 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-	@Provides
-	@Singleton
-	fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
-		return OkHttpClient.Builder()
-			.addInterceptor(RequestInterceptor())
-			.cache(CoilUtils.createDefaultCache(context))
-			.build()
-	}
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(@ApplicationContext context: Context): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(RequestInterceptor())
+            .cache(CoilUtils.createDefaultCache(context))
+            .build()
+    }
 
-	@Provides
-	@Singleton
-	fun provideImageLoader(
-		@ApplicationContext context: Context,
-		okHttpClient: OkHttpClient,
-	): ImageLoader {
-		return ImageLoader.Builder(context)
-			.okHttpClient { okHttpClient }
-			.build()
-	}
+    @Provides
+    @Singleton
+    fun provideImageLoader(
+        @ApplicationContext context: Context,
+        okHttpClient: OkHttpClient,
+    ): ImageLoader {
+        return ImageLoader.Builder(context)
+            .okHttpClient { okHttpClient }
+            .build()
+    }
 
-	@Provides
-	@Singleton
-	fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit {
-		return Retrofit.Builder()
-			.client(okHttpClient)
-			.baseUrl("http://localhost:5000")
-			.addConverterFactory(GsonConverterFactory.create())
-			.addCallAdapterFactory(CoroutinesResponseCallAdapterFactory())
-			.build()
-	}
+    @Provides
+    @Singleton
+    fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .client(okHttpClient)
+            .baseUrl("http://localhost:5000")
+            .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(CoroutinesResponseCallAdapterFactory())
+            .build()
+    }
 
-	@Provides
-	@Singleton
-	fun providesApiService(retrofit: Retrofit): ApiService {
-		return retrofit.create(ApiService::class.java)
-	}
+    @Provides
+    @Singleton
+    fun providesApiService(retrofit: Retrofit): ApiService {
+        return retrofit.create(ApiService::class.java)
+    }
 
-	@Provides
-	@Singleton
-	fun providesApiHelper(apiHelper: ApiHelperImpl): ApiHelper = apiHelper
-
+    @Provides
+    @Singleton
+    fun providesApiHelper(apiHelper: ApiHelperImpl): ApiHelper = apiHelper
 }
