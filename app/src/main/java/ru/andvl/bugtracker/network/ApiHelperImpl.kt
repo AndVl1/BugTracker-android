@@ -17,4 +17,7 @@ class ApiHelperImpl @Inject constructor(
 
     override suspend fun register(user: LoginUser): ApiResponse<User> =
         apiService.register(user)
+
+    override suspend fun checkEmail(user: LoginUser): ApiResponse<Boolean> =
+        apiService.checkEmail(user)
 }

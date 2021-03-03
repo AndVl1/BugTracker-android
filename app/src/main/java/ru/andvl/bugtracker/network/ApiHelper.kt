@@ -11,4 +11,6 @@ interface ApiHelper {
     suspend fun login(user: LoginUser): ApiResponse<User>
 
     suspend fun register(user: LoginUser): ApiResponse<User>
+
+    suspend fun checkEmail(user: LoginUser): ApiResponse<Boolean>
 }

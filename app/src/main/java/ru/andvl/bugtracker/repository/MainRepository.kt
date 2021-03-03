@@ -11,4 +11,6 @@ class MainRepository @Inject constructor(
     suspend fun login(user: LoginUser) = apiHelper.login(user)
 
     suspend fun register(user: LoginUser) = apiHelper.register(user)
+
+    suspend fun checkEmail(user: LoginUser) = apiHelper.checkEmail(user)
 }

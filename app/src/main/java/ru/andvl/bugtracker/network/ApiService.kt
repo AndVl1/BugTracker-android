@@ -20,4 +20,9 @@ interface ApiService {
 
     @GET("/user")
     suspend fun getUserData(): ApiResponse<User>
+
+    @GET("/check")
+    suspend fun checkEmail(
+        user: LoginUser
+    ): ApiResponse<Boolean>
 }
