@@ -12,5 +12,4 @@ class Actions(navController: NavController) {
     val navigateUp: () -> Unit = {
         navController.popBackStack()
     }
-
 }

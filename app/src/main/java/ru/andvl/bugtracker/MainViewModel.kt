@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,6 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.repository.MainRepository
+import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -48,7 +48,6 @@ class MainViewModel @Inject constructor(
     /** Check email string */
     val email = mutableStateOf("")
     private val _isEmailAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
 
     val isEmailAvailable = _isEmailAvailable.asStateFlow()
 
