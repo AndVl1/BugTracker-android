@@ -18,14 +18,12 @@ class MainViewModel @Inject constructor(
     private val mainRepository: MainRepository
 ) : ViewModel() {
 
+    /* TODO  separate in different VMs */
     // Login, register
-    // TODO: separate in different VMs
+    /** Login page strings*/
     val login = mutableStateOf("")
     val password = mutableStateOf("")
     val passwordVisibility = mutableStateOf(false)
-
-    private val _isEmailAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isEmailAvailable = _isEmailAvailable.asStateFlow()
 
     fun onLoginChanged(login: String) {
         this.login.value = login
@@ -38,6 +36,26 @@ class MainViewModel @Inject constructor(
     fun onPasswordVisibilityChanged() {
         passwordVisibility.value = !passwordVisibility.value
     }
+
+    /** Check email string */
+    val email = mutableStateOf("")
+    private val _isEmailAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+
+    val isEmailAvailable = _isEmailAvailable.asStateFlow()
+
+    /** Nickname input */
+    val nickname = mutableStateOf("")
+    private val _isNickNameAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    val isNicknameAvailable = _isNickNameAvailable.asStateFlow()
+
+    fun onNicknameChanged(nick: String) {
+        // TODO
+    }
+
+    /** Password input for registration */
+    val newUserPassword = mutableStateOf("")
 
     fun onCheckEmail(email: String) {
         viewModelScope.launch {

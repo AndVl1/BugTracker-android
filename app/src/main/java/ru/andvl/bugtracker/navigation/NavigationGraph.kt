@@ -4,12 +4,13 @@ import androidx.navigation.NavController
 
 object Destinations {
     const val Login = "login"
-    const val Register1 = "register_email"
-    const val Register2 = "register_password"
+    const val CheckEmail = "register_email"
+    const val NicknamePasswordInput = "register_password"
 }
 
 class Actions(navController: NavController) {
     val navigateUp: () -> Unit = {
         navController.popBackStack()
     }
+
 }
