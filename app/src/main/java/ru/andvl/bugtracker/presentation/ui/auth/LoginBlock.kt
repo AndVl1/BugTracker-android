@@ -27,11 +27,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
+import androidx.navigation.compose.navigate
 import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.R
+import ru.andvl.bugtracker.navigation.Destinations
 
 @Composable
-fun LoginPage(viewModel: MainViewModel) {
+fun LoginPage(
+    viewModel: MainViewModel,
+    navController: NavController,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -44,7 +50,8 @@ fun LoginPage(viewModel: MainViewModel) {
             password = viewModel.password,
             passwordVisibility = viewModel.passwordVisibility,
             onLoginClickListener = { viewModel.onLoginButtonClickListener() },
-            onRegisterClickListener = { viewModel.onRegisterClickListener() }
+            onRegisterClickListener = { navController.navigate(Destinations.CheckEmail) },
+            onPasswordVisibilityChangeListener = { viewModel.onPasswordVisibilityChanged() },
         )
     }
 }
@@ -56,6 +63,7 @@ fun LoginBlock(
     passwordVisibility: MutableState<Boolean>,
     onLoginClickListener: () -> Unit,
     onRegisterClickListener: () -> Unit,
+    onPasswordVisibilityChangeListener: () -> Unit,
 ) {
 
     val layoutPadding = dimensionResource(id = R.dimen.auth_padding)
@@ -123,7 +131,8 @@ fun LoginBlock(
             trailingIcon = {
                 IconButton(
                     onClick = {
-                        passwordVisibility.value = !passwordVisibility.value
+                        onPasswordVisibilityChangeListener()
+//                        passwordVisibility.value = !passwordVisibility.value
                     }
                 ) {
                     Icon(
@@ -135,7 +144,7 @@ fun LoginBlock(
         )
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { onLoginClickListener() },
             modifier = Modifier
                 .constrainAs(buttonRefs) {
                     top.linkTo(passRefs.bottom, margin = elementsMargin)
@@ -160,7 +169,7 @@ fun LoginBlock(
             )
 
             ClickableText(
-                onClick = { /* TODO */ },
+                onClick = { onRegisterClickListener() },
                 text = AnnotatedString(stringResource(R.string.register_navigate_button)),
             )
         }
@@ -176,5 +185,6 @@ fun LoginPreview() {
         passwordVisibility = mutableStateOf(false),
         onLoginClickListener = {},
         onRegisterClickListener = {},
+        onPasswordVisibilityChangeListener = {},
     )
 }

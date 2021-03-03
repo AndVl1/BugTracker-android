@@ -17,7 +17,10 @@ fun BugTrackerApp(viewModel: MainViewModel) {
     val actions = remember(navController) { Actions(navController) }
     NavHost(navController = navController, startDestination = "login") {
         composable(Destinations.Login) {
-            LoginPage(viewModel = viewModel)
+            LoginPage(
+                viewModel = viewModel,
+                navController = navController,
+            )
         }
         composable(Destinations.CheckEmail) {
             CheckEmailPage(viewModel = viewModel)

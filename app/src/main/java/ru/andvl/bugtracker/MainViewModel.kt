@@ -37,6 +37,14 @@ class MainViewModel @Inject constructor(
         passwordVisibility.value = !passwordVisibility.value
     }
 
+    fun onLoginButtonClickListener() {
+        /* TODO */
+    }
+
+    fun onRegisterClickListener() {
+        /* TODO */
+    }
+
     /** Check email string */
     val email = mutableStateOf("")
     private val _isEmailAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -63,14 +71,6 @@ class MainViewModel @Inject constructor(
                 mainRepository.checkEmail(LoginUser(login = email, password = ""))
             }
         }
-    }
-
-    fun onLoginButtonClickListener() {
-        /* TODO */
-    }
-
-    fun onRegisterClickListener() {
-        /* TODO */
     }
     // ---------------------
 }
