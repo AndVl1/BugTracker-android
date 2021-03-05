@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.repository.MainRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,7 +26,7 @@ class MainViewModel @Inject constructor(
     val password = mutableStateOf("")
     val passwordVisibility = mutableStateOf(false)
 
-    private val _areLoginAndPasswordCorrect: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val _areLoginAndPasswordCorrect: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val areLoginAndPasswordCorrect = _areLoginAndPasswordCorrect.asStateFlow()
 
     fun onLoginChanged(login: String) {
@@ -49,18 +50,24 @@ class MainViewModel @Inject constructor(
     }
 
     /** Check email string */
-    val email = mutableStateOf("")
-    private val _isEmailAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val emailRegex = Regex("\\w+@\\w+.\\w+")
+
+    val emailCheckString = mutableStateOf("")
+    private val _isEmailAvailable: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val isEmailAvailable = _isEmailAvailable.asStateFlow()
+
+    fun onEmailInputChanged() {
+        Timber.d(emailCheckString.value)
+        _isEmailAvailable.value = emailRegex.matches(emailCheckString.value)
+    }
 
     /** Nickname input */
     val nickname = mutableStateOf("")
     private val _isNickNameAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
     val isNicknameAvailable = _isNickNameAvailable.asStateFlow()
 
     fun onNicknameChanged(nick: String) {
-        // TODO
+
     }
 
     /** Password input for registration */

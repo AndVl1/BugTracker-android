@@ -1,5 +1,6 @@
 package ru.andvl.bugtracker.presentation.ui.auth
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,8 +47,9 @@ fun CheckEmailPage(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         RegisterCheckEmail(
-            login = viewModel.login,
+            login = viewModel.emailCheckString,
             isEmailAvailable = viewModel.isEmailAvailable,
+            onEmailInputChangeListener = { viewModel.onEmailInputChanged() },
             onButtonClickListener = { navController.navigate(Destinations.NicknamePasswordInput) }
         )
     }
@@ -57,6 +59,7 @@ fun CheckEmailPage(
 fun RegisterCheckEmail(
     login: MutableState<String>,
     isEmailAvailable: SharedFlow<Boolean>,
+    onEmailInputChangeListener: () -> Unit,
     onButtonClickListener: () -> Unit,
 ) {
 
@@ -92,6 +95,7 @@ fun RegisterCheckEmail(
         TextField(
             value = login.value,
             onValueChange = {
+                onEmailInputChangeListener()
                 login.value = it
             },
             label = { Text(text = stringResource(R.string.register_email_check)) },
@@ -103,7 +107,7 @@ fun RegisterCheckEmail(
                 }
                 .fillMaxWidth(),
             trailingIcon = {
-                if (emailAvailabilityState.value) {
+                if (!emailAvailabilityState.value) {
                     IconButton(onClick = { }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_error_outline_black_24dp),
@@ -246,6 +250,7 @@ fun RegisterEmailPagePreview() {
     RegisterCheckEmail(
         login = mutableStateOf(""),
         onButtonClickListener = {},
+        onEmailInputChangeListener = {},
         isEmailAvailable = MutableStateFlow(false).asStateFlow(),
     )
 }
