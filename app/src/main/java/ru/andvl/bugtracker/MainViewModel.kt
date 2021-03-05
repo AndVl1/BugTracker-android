@@ -3,6 +3,7 @@ package ru.andvl.bugtracker
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,6 +60,26 @@ class MainViewModel @Inject constructor(
     fun onEmailInputChanged() {
         Timber.d(emailCheckString.value)
         _isEmailAvailable.value = emailRegex.matches(emailCheckString.value)
+        if (emailRegex.matches(emailCheckString.value)) {
+            viewModelScope.launch {
+                mainRepository.checkEmail(
+                    LoginUser(
+                        login = emailCheckString.value
+                    )
+                ).suspendOnSuccess {
+                    _isEmailAvailable.value = this.data!!
+                }
+            }
+        }
+        if (_isEmailAvailable.value) {
+            viewModelScope.launch {
+                mainRepository.checkEmail(
+                    LoginUser(
+                        login = emailCheckString.value
+                    )
+                )
+            }
+        }
     }
 
     /** Nickname input */
