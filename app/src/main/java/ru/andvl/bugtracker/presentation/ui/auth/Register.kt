@@ -8,10 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,11 +23,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
+import androidx.navigation.compose.navigate
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.R
+import ru.andvl.bugtracker.navigation.Destinations
+import timber.log.Timber
 
 @Composable
-fun CheckEmailPage(viewModel: MainViewModel) {
+fun CheckEmailPage(
+    viewModel: MainViewModel,
+    navController: NavController,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -34,12 +47,18 @@ fun CheckEmailPage(viewModel: MainViewModel) {
     ) {
         RegisterCheckEmail(
             login = viewModel.login,
+            isEmailAvailable = viewModel.isEmailAvailable,
+            onButtonClickListener = { navController.navigate(Destinations.NicknamePasswordInput) }
         )
     }
 }
 
 @Composable
-fun RegisterCheckEmail(login: MutableState<String>) {
+fun RegisterCheckEmail(
+    login: MutableState<String>,
+    isEmailAvailable: SharedFlow<Boolean>,
+    onButtonClickListener: () -> Unit,
+) {
 
     val layoutPadding = dimensionResource(id = R.dimen.auth_padding)
 
@@ -57,6 +76,8 @@ fun RegisterCheckEmail(login: MutableState<String>) {
         val imageMarginTop = dimensionResource(id = R.dimen.auth_content_margin_top)
         val elementsMargin = dimensionResource(id = R.dimen.elements_margin)
         val buttonHeight = dimensionResource(id = R.dimen.auth_button_height)
+
+        val emailAvailabilityState = isEmailAvailable.collectAsState(initial = true)
 
         Image(
             painter = painterResource(id = R.drawable.bug),
@@ -81,10 +102,25 @@ fun RegisterCheckEmail(login: MutableState<String>) {
                     end.linkTo(parent.end)
                 }
                 .fillMaxWidth(),
+            trailingIcon = {
+                if (emailAvailabilityState.value) {
+                    IconButton(onClick = { }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_error_outline_black_24dp),
+                            contentDescription = stringResource(R.string.email_error),
+                        )
+                    }
+                }
+            },
         )
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                Timber.d(emailAvailabilityState.value.toString())
+                if (emailAvailabilityState.value) {
+                    onButtonClickListener()
+                }
+            },
             modifier = Modifier
                 .constrainAs(buttonRefs) {
                     top.linkTo(loginRefs.bottom, margin = elementsMargin)
@@ -207,5 +243,9 @@ fun RegisterPasswordPreview() {
 @Composable
 @Preview
 fun RegisterEmailPagePreview() {
-    RegisterCheckEmail(login = mutableStateOf(""))
+    RegisterCheckEmail(
+        login = mutableStateOf(""),
+        onButtonClickListener = {},
+        isEmailAvailable = MutableStateFlow(false).asStateFlow(),
+    )
 }

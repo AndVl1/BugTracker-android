@@ -25,6 +25,9 @@ class MainViewModel @Inject constructor(
     val password = mutableStateOf("")
     val passwordVisibility = mutableStateOf(false)
 
+    private val _areLoginAndPasswordCorrect: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val areLoginAndPasswordCorrect = _areLoginAndPasswordCorrect.asStateFlow()
+
     fun onLoginChanged(login: String) {
         this.login.value = login
     }
@@ -48,7 +51,6 @@ class MainViewModel @Inject constructor(
     /** Check email string */
     val email = mutableStateOf("")
     private val _isEmailAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
     val isEmailAvailable = _isEmailAvailable.asStateFlow()
 
     /** Nickname input */

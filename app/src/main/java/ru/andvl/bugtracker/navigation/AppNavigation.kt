@@ -22,7 +22,10 @@ fun BugTrackerApp(viewModel: MainViewModel) {
             )
         }
         composable(Destinations.CheckEmail) {
-            CheckEmailPage(viewModel = viewModel)
+            CheckEmailPage(
+                viewModel = viewModel,
+                navController = navController
+            )
         }
         composable(Destinations.NicknamePasswordInput) {
             PasswordNicknamePage(viewModel = viewModel)
