@@ -19,7 +19,7 @@ if [ $CI ]; then
 
   reviewdog -f=checkstyle \
       -name="detekt" \
-      -reporter="github-check" \
+      -reporter="github-pr-review" \
       -fail-on-error="true" <detekt_report.xml
 else
   $DETEKT_BIN --config .github/workflows/assets/detekt.yml "$@"
