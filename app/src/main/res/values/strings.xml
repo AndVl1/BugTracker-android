@@ -11,4 +11,7 @@
     <string name="app_icon">Bug image</string>
     <string name="nickname_text_field">Nickname</string>
     <string name="email_error">Error flag if email is unavailable</string>
+    <string name="projects_page">Projects</string>
+    <string name="tasks_page">Tasks</string>
+    <string name="profile_page">Profile</string>
 </resources>

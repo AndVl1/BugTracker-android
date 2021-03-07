@@ -110,6 +110,7 @@ fun LoginBlock(
                     end.linkTo(parent.end)
                 }
                 .fillMaxWidth(),
+            maxLines = 1,
         )
 
         TextField(
@@ -133,7 +134,6 @@ fun LoginBlock(
                 IconButton(
                     onClick = {
                         onPasswordVisibilityChangeListener()
-//                        passwordVisibility.value = !passwordVisibility.value
                     }
                 ) {
                     Icon(
@@ -141,7 +141,8 @@ fun LoginBlock(
                         contentDescription = stringResource(R.string.pass_icon_description)
                     )
                 }
-            }
+            },
+            maxLines = 1,
         )
 
         Button(

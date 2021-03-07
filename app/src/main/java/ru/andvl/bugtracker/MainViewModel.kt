@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -57,42 +58,27 @@ class MainViewModel @Inject constructor(
     private val _isEmailAvailable: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val isEmailAvailable = _isEmailAvailable.asStateFlow()
 
-    fun onEmailInputChanged() {
-        Timber.d(emailCheckString.value)
-        _isEmailAvailable.value = emailRegex.matches(emailCheckString.value)
-        if (emailRegex.matches(emailCheckString.value)) {
-            viewModelScope.launch {
+    private val emailChangesActorChannel = viewModelScope.actor<String> {
+        withContext(Dispatchers.IO) {
+            for (change in channel) {
                 mainRepository.checkEmail(
                     LoginUser(
-                        login = emailCheckString.value
+                        login = change
                     )
                 ).suspendOnSuccess {
                     _isEmailAvailable.value = this.data!!
                 }
             }
         }
-        if (_isEmailAvailable.value) {
-            viewModelScope.launch {
-                mainRepository.checkEmail(
-                    LoginUser(
-                        login = emailCheckString.value
-                    )
-                )
-            }
+    }
+
+    fun onEmailInputChanged() {
+        Timber.d(emailCheckString.value)
+        _isEmailAvailable.value = emailRegex.matches(emailCheckString.value)
+        if (emailRegex.matches(emailCheckString.value)) {
+            emailChangesActorChannel.offer(emailCheckString.value)
         }
     }
-
-    /** Nickname input */
-    val nickname = mutableStateOf("")
-    private val _isNickNameAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isNicknameAvailable = _isNickNameAvailable.asStateFlow()
-
-    fun onNicknameChanged(nick: String) {
-
-    }
-
-    /** Password input for registration */
-    val newUserPassword = mutableStateOf("")
 
     fun onCheckEmail(email: String) {
         viewModelScope.launch {
@@ -101,5 +87,18 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    /** Nickname input */
+    val nickname = mutableStateOf("")
+    private val _isNickNameAvailable: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    val isNicknameAvailable = _isNickNameAvailable.asStateFlow()
+
+    fun onNicknameChanged() {
+
+    }
+
+    /** Password input for registration */
+    val newUserPassword = mutableStateOf("")
     // ---------------------
 }
