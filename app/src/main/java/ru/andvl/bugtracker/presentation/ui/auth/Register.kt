@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.R
 import ru.andvl.bugtracker.navigation.Destinations
+import ru.andvl.bugtracker.ui.custom.CircleProgressIndicator
 import timber.log.Timber
 
 @Composable
@@ -74,6 +75,7 @@ fun RegisterCheckEmail(
             imageRefs,
             loginRefs,
             buttonRefs,
+            progressIndicatorRefs,
         ) = createRefs()
 
         val imageMarginTop = dimensionResource(id = R.dimen.auth_content_margin_top)
@@ -116,6 +118,7 @@ fun RegisterCheckEmail(
                     }
                 }
             },
+            maxLines = 1,
         )
 
         Button(
@@ -201,7 +204,8 @@ fun RegisterEnterPassword(
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
                 }
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            maxLines = 1,
         )
 
         TextField(
@@ -217,6 +221,7 @@ fun RegisterEnterPassword(
                     end.linkTo(nicknameRefs.end)
                 }
                 .fillMaxWidth(),
+            maxLines = 1,
         )
 
         Button(
@@ -232,6 +237,7 @@ fun RegisterEnterPassword(
         ) {
             Text(text = stringResource(R.string.register_navigate_button))
         }
+
     }
 }
 
