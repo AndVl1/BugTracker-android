@@ -1,6 +1,7 @@
 package ru.andvl.bugtracker.di
 
 import android.content.Context
+import android.os.Build
 import coil.ImageLoader
 import coil.util.CoilUtils
 import com.skydoves.sandwich.coroutines.CoroutinesResponseCallAdapterFactory
@@ -12,6 +13,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.andvl.bugtracker.BuildConfig
 import ru.andvl.bugtracker.network.ApiHelper
 import ru.andvl.bugtracker.network.ApiHelperImpl
 import ru.andvl.bugtracker.network.ApiService
@@ -47,7 +49,7 @@ object NetworkModule {
     fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl("http://localhost:5000")
+            .baseUrl(if (BuildConfig.DEBUG) "http://10.0.2.2:5000" else "")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(CoroutinesResponseCallAdapterFactory())
             .build()

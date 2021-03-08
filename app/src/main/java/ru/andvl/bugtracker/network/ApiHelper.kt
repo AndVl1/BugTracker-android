@@ -10,7 +10,11 @@ interface ApiHelper {
 
     suspend fun login(user: LoginUser): ApiResponse<User>
 
-    suspend fun register(user: LoginUser): ApiResponse<User>
+    suspend fun register(
+        email: String,
+        nickname: String,
+        password: String
+    ): ApiResponse<User>
 
-    suspend fun checkEmail(user: LoginUser): ApiResponse<Boolean>
+    suspend fun checkEmail(email: String): ApiResponse<String>
 }

@@ -8,4 +8,6 @@ data class LoginUser(
     @SerializedName("email")
     val login: String,
     val password: String = "",
+    @SerializedName("name")
+    val nickname: String = ""
 )

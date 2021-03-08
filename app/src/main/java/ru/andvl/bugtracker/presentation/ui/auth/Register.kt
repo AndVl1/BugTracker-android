@@ -1,6 +1,7 @@
 package ru.andvl.bugtracker.presentation.ui.auth
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,9 +28,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.R
 import ru.andvl.bugtracker.navigation.Destinations
@@ -50,8 +57,10 @@ fun CheckEmailPage(
         RegisterCheckEmail(
             login = viewModel.emailCheckString,
             isEmailAvailable = viewModel.isEmailAvailable,
+            canNavigate = viewModel.canNavigateToNext,
             onEmailInputChangeListener = { viewModel.onEmailInputChanged() },
-            onButtonClickListener = { navController.navigate(Destinations.NicknamePasswordInput) }
+            onButtonClickListener = { viewModel.checkEmail() },
+            navigateToNext = { navController.navigate(Destinations.NicknamePasswordInput) }
         )
     }
 }
@@ -59,9 +68,11 @@ fun CheckEmailPage(
 @Composable
 fun RegisterCheckEmail(
     login: MutableState<String>,
-    isEmailAvailable: SharedFlow<Boolean>,
+    isEmailAvailable: StateFlow<Boolean>,
+    canNavigate: StateFlow<Boolean>,
     onEmailInputChangeListener: () -> Unit,
     onButtonClickListener: () -> Unit,
+    navigateToNext: () -> Unit,
 ) {
 
     val layoutPadding = dimensionResource(id = R.dimen.auth_padding)
@@ -82,7 +93,14 @@ fun RegisterCheckEmail(
         val elementsMargin = dimensionResource(id = R.dimen.elements_margin)
         val buttonHeight = dimensionResource(id = R.dimen.auth_button_height)
 
-        val emailAvailabilityState = isEmailAvailable.collectAsState(initial = true)
+        val emailAvailabilityState = isEmailAvailable.collectAsState()
+        MainScope().launch {
+            canNavigate.collect {
+                if (it) {
+                    navigateToNext()
+                }
+            }
+        }
 
         Image(
             painter = painterResource(id = R.drawable.bug),
@@ -97,7 +115,6 @@ fun RegisterCheckEmail(
         TextField(
             value = login.value,
             onValueChange = {
-                onEmailInputChangeListener()
                 login.value = it
             },
             label = { Text(text = stringResource(R.string.register_email_check)) },
@@ -124,9 +141,7 @@ fun RegisterCheckEmail(
         Button(
             onClick = {
                 Timber.d(emailAvailabilityState.value.toString())
-                if (emailAvailabilityState.value) {
-                    onButtonClickListener()
-                }
+                onButtonClickListener()
             },
             modifier = Modifier
                 .constrainAs(buttonRefs) {
@@ -154,6 +169,8 @@ fun PasswordNicknamePage(viewModel: MainViewModel) {
         RegisterEnterPassword(
             nickname = viewModel.nickname,
             password = viewModel.newUserPassword,
+            isRegistered = viewModel.isRegistrationSuccessful,
+            onButtonClickListener = { viewModel.onRegisterClicked() },
         )
     }
 }
@@ -162,6 +179,8 @@ fun PasswordNicknamePage(viewModel: MainViewModel) {
 fun RegisterEnterPassword(
     nickname: MutableState<String>,
     password: MutableState<String>,
+    isRegistered: StateFlow<Boolean>,
+    onButtonClickListener: () -> Unit,
 ) {
 
     val layoutPadding = dimensionResource(id = R.dimen.auth_padding)
@@ -181,6 +200,14 @@ fun RegisterEnterPassword(
         val imageMarginTop = dimensionResource(id = R.dimen.auth_content_margin_top)
         val elementsMargin = dimensionResource(id = R.dimen.elements_margin)
         val buttonHeight = dimensionResource(id = R.dimen.auth_button_height)
+
+        MainScope().launch {
+            isRegistered.collect {
+                if (it) {
+                    Timber.d("Registered successfully")
+                }
+            }
+        }
 
         Image(
             painter = painterResource(id = R.drawable.bug),
@@ -225,7 +252,9 @@ fun RegisterEnterPassword(
         )
 
         Button(
-            onClick = { /*TODO*/ },
+            onClick = {
+                onButtonClickListener()
+            },
             modifier = Modifier
                 .constrainAs(buttonRefs) {
                     top.linkTo(passwordRefs.bottom, margin = elementsMargin)
@@ -247,6 +276,8 @@ fun RegisterPasswordPreview() {
     RegisterEnterPassword(
         nickname = mutableStateOf(""),
         password = mutableStateOf(""),
+        isRegistered = MutableStateFlow(false).asStateFlow(),
+        onButtonClickListener = {}
     )
 }
 
@@ -258,5 +289,7 @@ fun RegisterEmailPagePreview() {
         onButtonClickListener = {},
         onEmailInputChangeListener = {},
         isEmailAvailable = MutableStateFlow(false).asStateFlow(),
+        navigateToNext = {},
+        canNavigate = MutableStateFlow(false).asStateFlow()
     )
 }

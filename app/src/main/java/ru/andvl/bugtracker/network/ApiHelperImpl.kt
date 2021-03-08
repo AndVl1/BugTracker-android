@@ -13,11 +13,14 @@ class ApiHelperImpl @Inject constructor(
         apiService.getUserData()
 
     override suspend fun login(user: LoginUser): ApiResponse<User> =
-        apiService.login(user)
+        apiService.login(login = user.login, password = user.password)
 
-    override suspend fun register(user: LoginUser): ApiResponse<User> =
-        apiService.register(user)
+    override suspend fun register(
+        email: String,
+        nickname: String,
+        password: String,
+    ): ApiResponse<User> = apiService.register(email, nickname, password)
 
-    override suspend fun checkEmail(user: LoginUser): ApiResponse<Boolean> =
-        apiService.checkEmail(user)
+    override suspend fun checkEmail(email: String): ApiResponse<String> =
+        apiService.checkEmail(email = email)
 }

@@ -14,4 +14,5 @@
     <string name="projects_page">Projects</string>
     <string name="tasks_page">Tasks</string>
     <string name="profile_page">Profile</string>
+    <string name="db_name">BugTrackerCache.db</string>
 </resources>
