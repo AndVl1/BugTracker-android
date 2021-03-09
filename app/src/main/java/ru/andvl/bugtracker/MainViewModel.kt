@@ -41,6 +41,7 @@ class MainViewModel @Inject constructor(
                 ).suspendOnSuccess {
                     Timber.d(statusCode.code.toString())
                     _areLoginAndPasswordCorrect.emit(this.statusCode == StatusCode.OK)
+                    _isAuthenticationSuccessful.emit(this.statusCode == StatusCode.OK)
                 }.suspendOnError {
                     Timber.d(statusCode.code.toString())
                     _areLoginAndPasswordCorrect.emit(false)
@@ -124,8 +125,8 @@ class MainViewModel @Inject constructor(
 
     /** Nickname input */
     val nickname = mutableStateOf("")
-    private val _isRegistrationSuccessful: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isRegistrationSuccessful = _isRegistrationSuccessful.asStateFlow()
+    private val _isAuthenticationSuccessful: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isAuthenticationSuccessful = _isAuthenticationSuccessful.asStateFlow()
 
     /** Password input for registration */
     val newUserPassword = mutableStateOf("")
@@ -137,10 +138,10 @@ class MainViewModel @Inject constructor(
                     user
                 ).suspendOnSuccess {
                     Timber.d(this.data.toString())
-                    _isRegistrationSuccessful.emit(this.statusCode == StatusCode.OK)
+                    _isAuthenticationSuccessful.emit(this.statusCode == StatusCode.OK)
                 }.suspendOnError {
                     Timber.d(statusCode.code.toString())
-                    _isRegistrationSuccessful.emit(false)
+                    _isAuthenticationSuccessful.emit(false)
                 }.onException {
                     Timber.d(this.message)
                 }

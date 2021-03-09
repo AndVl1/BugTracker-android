@@ -5,12 +5,12 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Entity
-data class User(
-    @SerializedName("userId")
+data class Project(
     @PrimaryKey
-    val userId: Int,
-    @SerializedName("login")
-    val login: String,
-    @SerializedName("name")
+    @SerializedName("projectId")
+    val id: Int,
+    @SerializedName("projectName")
     val name: String,
+    @SerializedName("projectDescription")
+    val description: String
 )

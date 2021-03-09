@@ -56,6 +56,15 @@ fun LoginPage(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        MainScope().launch {
+            viewModel.isAuthenticationSuccessful
+                .collect{ status ->
+                    if (status) {
+                        navController.navigate(Destinations.MainScreenNavigation)
+                    }
+            }
+        }
+
         LoginBlock(
             login = viewModel.login,
             password = viewModel.password,

@@ -1,7 +1,5 @@
 package ru.andvl.bugtracker.presentation.ui.auth
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,7 +18,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,10 +25,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -39,7 +34,6 @@ import kotlinx.coroutines.launch
 import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.R
 import ru.andvl.bugtracker.navigation.Destinations
-import ru.andvl.bugtracker.ui.custom.CircleProgressIndicator
 import timber.log.Timber
 
 @Composable
@@ -169,7 +163,7 @@ fun PasswordNicknamePage(viewModel: MainViewModel) {
         RegisterEnterPassword(
             nickname = viewModel.nickname,
             password = viewModel.newUserPassword,
-            isRegistered = viewModel.isRegistrationSuccessful,
+            isRegistered = viewModel.isAuthenticationSuccessful,
             onButtonClickListener = { viewModel.onRegisterClicked() },
         )
     }

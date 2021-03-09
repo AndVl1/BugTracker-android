@@ -31,7 +31,7 @@ fun BugTrackerApp(viewModel: MainViewModel) {
             PasswordNicknamePage(viewModel = viewModel)
         }
         composable(Destinations.MainScreenNavigation) {
-            BottomNavBarConfiguration(navController = navController)
+            MainScreen()
         }
     }
 }
