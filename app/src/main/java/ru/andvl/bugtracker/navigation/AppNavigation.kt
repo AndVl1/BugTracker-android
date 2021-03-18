@@ -1,6 +1,7 @@
 package ru.andvl.bugtracker.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,7 +15,13 @@ import ru.andvl.bugtracker.presentation.ui.auth.PasswordNicknamePage
 fun BugTrackerApp(viewModel: MainViewModel) {
     val navController = rememberNavController()
     val actions = remember(navController) { Actions(navController) }
-    NavHost(navController = navController, startDestination = "login") {
+    val loggedIn = viewModel.isLoggedIn.collectAsState(initial = false)
+    val startDestination = if (!loggedIn.value) {
+        Destinations.Login
+    } else {
+        Destinations.MainScreenNavigation
+    }
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(Destinations.Login) {
             LoginPage(
                 viewModel = viewModel,

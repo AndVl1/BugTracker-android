@@ -7,6 +7,7 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
 import ru.andvl.bugtracker.network.ApiHelper
 import ru.andvl.bugtracker.persistence.UserDao
+import ru.andvl.bugtracker.presentation.datastore.DataStoreManager
 import ru.andvl.bugtracker.repository.MainRepository
 
 @Module
@@ -17,6 +18,11 @@ object RepositoryModule {
     @ViewModelScoped
     fun providesMainRepository(
         apiHelper: ApiHelper,
-        userDao: UserDao
-    ) = MainRepository(apiHelper, userDao)
+        userDao: UserDao,
+        dataStoreManager: DataStoreManager,
+    ) = MainRepository(
+        apiHelper,
+        userDao,
+        dataStoreManager,
+    )
 }
