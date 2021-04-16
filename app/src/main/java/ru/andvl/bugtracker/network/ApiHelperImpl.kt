@@ -2,6 +2,7 @@ package ru.andvl.bugtracker.network
 
 import com.skydoves.sandwich.ApiResponse
 import ru.andvl.bugtracker.model.LoginUser
+import ru.andvl.bugtracker.model.Project
 import ru.andvl.bugtracker.model.User
 import javax.inject.Inject
 
@@ -13,14 +14,24 @@ class ApiHelperImpl @Inject constructor(
         apiService.getUserData()
 
     override suspend fun login(user: LoginUser): ApiResponse<User> =
-        apiService.login(login = user.login, password = user.password)
+        apiService.login(
+            login = user.login,
+            password = user.password,
+        )
 
     override suspend fun register(
         email: String,
         nickname: String,
         password: String,
-    ): ApiResponse<User> = apiService.register(email, nickname, password)
+    ): ApiResponse<User> = apiService.register(
+        email = email,
+        nickname = nickname,
+        password = password,
+    )
 
     override suspend fun checkEmail(email: String): ApiResponse<String> =
         apiService.checkEmail(email = email)
+
+    override suspend fun getProjects(userId: Int): ApiResponse<List<Project>> =
+        apiService.getProjects(userId = userId)
 }

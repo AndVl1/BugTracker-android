@@ -1,5 +1,6 @@
 package ru.andvl.bugtracker.presentation.ui.auth
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import androidx.navigation.compose.popUpTo
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,6 +36,7 @@ import kotlinx.coroutines.launch
 import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.R
 import ru.andvl.bugtracker.navigation.Destinations
+import ru.andvl.bugtracker.presentation.ui.custom.PasswordTextField
 import timber.log.Timber
 
 @Composable
@@ -54,7 +57,9 @@ fun CheckEmailPage(
             canNavigate = viewModel.canNavigateToNext,
             onEmailInputChangeListener = { viewModel.onEmailInputChanged() },
             onButtonClickListener = { viewModel.checkEmail() },
-            navigateToNext = { navController.navigate(Destinations.NicknamePasswordInput) }
+            navigateToNext = { navController.navigate(Destinations.NicknamePasswordInput) {
+                popUpTo(Destinations.Login) {}
+            } }
         )
     }
 }
@@ -229,12 +234,9 @@ fun RegisterEnterPassword(
             maxLines = 1,
         )
 
-        TextField(
+        PasswordTextField(
             value = password.value,
-            onValueChange = {
-                password.value = it
-            },
-            label = { Text(text = stringResource(R.string.password_text_field)) },
+            onValueChange = { password.value = it },
             modifier = Modifier
                 .constrainAs(passwordRefs) {
                     top.linkTo(nicknameRefs.bottom, margin = elementsMargin)
@@ -242,7 +244,6 @@ fun RegisterEnterPassword(
                     end.linkTo(nicknameRefs.end)
                 }
                 .fillMaxWidth(),
-            maxLines = 1,
         )
 
         Button(
@@ -264,6 +265,7 @@ fun RegisterEnterPassword(
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 @Preview
 fun RegisterPasswordPreview() {
@@ -275,6 +277,7 @@ fun RegisterPasswordPreview() {
     )
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 @Preview
 fun RegisterEmailPagePreview() {

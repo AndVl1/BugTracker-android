@@ -1,5 +1,6 @@
 package ru.andvl.bugtracker.presentation.ui.auth
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import androidx.navigation.compose.popUpTo
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -42,6 +44,7 @@ import kotlinx.coroutines.launch
 import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.R
 import ru.andvl.bugtracker.navigation.Destinations
+import ru.andvl.bugtracker.presentation.ui.custom.PasswordTextField
 import timber.log.Timber
 
 @Composable
@@ -60,7 +63,9 @@ fun LoginPage(
             viewModel.isAuthenticationSuccessful
                 .collect{ status ->
                     if (status) {
-                        navController.navigate(Destinations.MainScreenNavigation)
+                        navController.navigate(Destinations.MainScreenNavigation) {
+                            popUpTo(Destinations.Login) {inclusive = true}
+                        }
                     }
             }
         }
@@ -135,54 +140,20 @@ fun LoginBlock(
             maxLines = 1,
         )
 
-        TextField(
+        PasswordTextField(
             value = password.value,
-            onValueChange = {
-                password.value = it
-            },
-            label = { Text(text = stringResource(R.string.password_text_field)) },
+            onValueChange = { password.value = it },
             modifier = Modifier
                 .constrainAs(passRefs) {
                     top.linkTo(loginRefs.bottom, elementsMargin)
                     start.linkTo(loginRefs.start)
                     end.linkTo(loginRefs.end)
                 }
-                .fillMaxWidth(),
-            visualTransformation = if (passwordVisibility.value)
-                VisualTransformation.None
-            else
-                PasswordVisualTransformation(),
-            trailingIcon = {
-                IconButton(
-                    onClick = {
-                        onPasswordVisibilityChangeListener()
-                    }
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_eye_black_24dp),
-                        contentDescription = stringResource(R.string.pass_icon_description)
-                    )
-                }
-            },
-            maxLines = 1,
+                .fillMaxWidth()
         )
 
         Button(
-            onClick = {
-                onLoginClickListener()
-//                MainScope().launch {
-//                    isLoggedIn.collect{
-//                        when(it) {
-//                            true -> Timber.d("true")
-//                            false -> Timber.d("false")
-//                        }
-//                    }
-//                }
-                when (loginStatus.value) {
-                    true -> { Timber.d("Login success") }
-                    false -> { Timber.d("Login error") }
-                }
-                      },
+            onClick = { onLoginClickListener() },
             modifier = Modifier
                 .constrainAs(buttonRefs) {
                     top.linkTo(passRefs.bottom, margin = elementsMargin)
@@ -214,6 +185,7 @@ fun LoginBlock(
     }
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 @Preview
 fun LoginPreview() {

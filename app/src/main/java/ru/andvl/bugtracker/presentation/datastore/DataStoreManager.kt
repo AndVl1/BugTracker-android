@@ -5,6 +5,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 
 private val Context.dataStore by preferencesDataStore("login")
 
@@ -17,6 +19,12 @@ class DataStoreManager(context: Context) {
             settings[PreferencesKeys.IS_LOGGED_IN] ?: false
         }
 
+    val isLoggedIn2 = runBlocking { loginDataStore.data
+        .map { value ->
+            value[PreferencesKeys.IS_LOGGED_IN] ?: false
+        }
+    }
+
     val currentUserId: Flow<Int> = loginDataStore.data
         .map { user ->
             user[PreferencesKeys.CURRENT_USER_ID] ?: -1
@@ -26,6 +34,7 @@ class DataStoreManager(context: Context) {
         loginDataStore.edit { settings ->
             settings[PreferencesKeys.IS_LOGGED_IN] = isLoggedIn
         }
+        Timber.d("DATASTORE $isLoggedIn")
     }
 
     suspend fun setCurrentUserId(id: Int) {

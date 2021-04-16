@@ -50,6 +50,7 @@ object NetworkModule {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(if (BuildConfig.DEBUG) "http://10.0.2.2:5000" else "")
+//            .baseUrl(if (BuildConfig.DEBUG) "https://dbe024cca2ee8f.localhost.run" else "")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(CoroutinesResponseCallAdapterFactory())
             .build()

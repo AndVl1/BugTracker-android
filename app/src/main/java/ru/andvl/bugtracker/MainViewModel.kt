@@ -47,6 +47,7 @@ class MainViewModel @Inject constructor(
                     Timber.d(statusCode.code.toString())
                     _areLoginAndPasswordCorrect.emit(this.statusCode == StatusCode.OK)
                     _isAuthenticationSuccessful.emit(this.statusCode == StatusCode.OK)
+                    mainRepository.setLoginStatus(status = this.statusCode == StatusCode.OK)
                 }.suspendOnError {
                     Timber.d(statusCode.code.toString())
                     _areLoginAndPasswordCorrect.emit(false)
@@ -144,6 +145,7 @@ class MainViewModel @Inject constructor(
                 ).suspendOnSuccess {
                     Timber.d(this.data.toString())
                     _isAuthenticationSuccessful.emit(this.statusCode == StatusCode.OK)
+                    mainRepository.setLoginStatus(status = this.statusCode == StatusCode.OK)
                 }.suspendOnError {
                     Timber.d(statusCode.code.toString())
                     _isAuthenticationSuccessful.emit(false)
