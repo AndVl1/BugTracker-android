@@ -14,14 +14,14 @@ class DataStoreManager(context: Context) {
 
     private val loginDataStore = context.dataStore
 
-    val isLoggedIn: Flow<Boolean> = loginDataStore.data
+    val isLoggedIn: Flow<Int> = loginDataStore.data
         .map { settings ->
-            settings[PreferencesKeys.IS_LOGGED_IN] ?: false
+            settings[PreferencesKeys.IS_LOGGED_IN] ?: LoginStatus.NOT_LOGGED_IN
         }
 
     val isLoggedIn2 = runBlocking { loginDataStore.data
-        .map { value ->
-            value[PreferencesKeys.IS_LOGGED_IN] ?: false
+        .map { settings ->
+            settings[PreferencesKeys.IS_LOGGED_IN] ?: LoginStatus.NOT_LOGGED_IN
         }
     }
 
@@ -30,7 +30,7 @@ class DataStoreManager(context: Context) {
             user[PreferencesKeys.CURRENT_USER_ID] ?: -1
         }
 
-    suspend fun setLoginStatus(isLoggedIn: Boolean) {
+    suspend fun setLoginStatus(isLoggedIn: Int) {
         loginDataStore.edit { settings ->
             settings[PreferencesKeys.IS_LOGGED_IN] = isLoggedIn
         }

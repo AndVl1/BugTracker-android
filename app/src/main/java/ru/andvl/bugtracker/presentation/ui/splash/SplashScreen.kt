@@ -21,19 +21,30 @@ import kotlinx.coroutines.launch
 import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.R
 import ru.andvl.bugtracker.navigation.Destinations
+import ru.andvl.bugtracker.presentation.datastore.LoginStatus
 
 @Composable
 fun SplashScreen(
     viewModel: MainViewModel,
     navController: NavController,
 ) {
-    val scope = rememberCoroutineScope()
 
+    val isLoggedIn = viewModel.isLoggedIn
+        .collectAsState(initial = LoginStatus.LOADING)
+        .value
 
-
-    val isLoggedIn = viewModel.isLoggedIn.collectAsState(initial = false).value
-
-    // LOG IN STATE enum (states: LOADING, LOGGED_IN, NOT_LOGGED_IN)
+    when (isLoggedIn) {
+        LoginStatus.LOGGED_IN -> {
+            navController.navigate(Destinations.MainScreenNavigation) {
+                popUpTo(Destinations.Splash) { inclusive = true }
+            }
+        }
+        LoginStatus.NOT_LOGGED_IN -> {
+            navController.navigate(Destinations.Login) {
+                popUpTo(Destinations.Splash) { inclusive = true }
+            }
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -41,21 +52,5 @@ fun SplashScreen(
             contentDescription = stringResource(R.string.app_icon),
             modifier = Modifier.align(Alignment.Center),
         )
-        Button(
-            onClick = {
-                if (isLoggedIn) {
-                    navController.navigate(Destinations.MainScreenNavigation) {
-                        popUpTo(Destinations.Splash) { inclusive = true }
-                    }
-                } else {
-                    navController.navigate(Destinations.Login) {
-                        popUpTo(Destinations.Splash) { inclusive = true }
-                    }
-                }
-            },
-            modifier = Modifier.align(Alignment.BottomCenter),
-        ) {
-            Text(text = "Navigate")
-        }
     }
 }

@@ -29,5 +29,5 @@ class MainRepository @Inject constructor(
 
     fun checkLogin() = dataStoreManager.isLoggedIn2
 
-    suspend fun setLoginStatus(status: Boolean) = dataStoreManager.setLoginStatus(status)
+    suspend fun setLoginStatus(status: Int) = dataStoreManager.setLoginStatus(status)
 }
