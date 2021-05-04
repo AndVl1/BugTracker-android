@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "96328526486",
+    "project_id": "bugtracker-379cd",
+    "storage_bucket": "bugtracker-379cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:96328526486:android:fafcb4ae15e3ce6c4530b7",
+        "android_client_info": {
+          "package_name": "ru.andvl.bugtracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "96328526486-0opfgh32t673v9n9pjgcrbr72o0fmh5o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyjNhNZbb37uNOr3C18CYmNFZ8QKYwNIg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "96328526486-0opfgh32t673v9n9pjgcrbr72o0fmh5o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
