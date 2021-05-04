@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.andvl.bugtracker.model.LoginUser
+import ru.andvl.bugtracker.presentation.datastore.LoginStatus
 import ru.andvl.bugtracker.repository.MainRepository
 import timber.log.Timber
 import javax.inject.Inject
@@ -47,6 +48,12 @@ class MainViewModel @Inject constructor(
                     Timber.d(statusCode.code.toString())
                     _areLoginAndPasswordCorrect.emit(this.statusCode == StatusCode.OK)
                     _isAuthenticationSuccessful.emit(this.statusCode == StatusCode.OK)
+                    mainRepository.setLoginStatus(
+                        status = if (this.statusCode == StatusCode.OK)
+                            LoginStatus.LOGGED_IN
+                        else
+                            LoginStatus.NOT_LOGGED_IN
+                    )
                 }.suspendOnError {
                     Timber.d(statusCode.code.toString())
                     _areLoginAndPasswordCorrect.emit(false)
@@ -144,6 +151,12 @@ class MainViewModel @Inject constructor(
                 ).suspendOnSuccess {
                     Timber.d(this.data.toString())
                     _isAuthenticationSuccessful.emit(this.statusCode == StatusCode.OK)
+                    mainRepository.setLoginStatus(
+                        status = if (this.statusCode == StatusCode.OK)
+                            LoginStatus.LOGGED_IN
+                        else
+                            LoginStatus.NOT_LOGGED_IN
+                    )
                 }.suspendOnError {
                     Timber.d(statusCode.code.toString())
                     _isAuthenticationSuccessful.emit(false)

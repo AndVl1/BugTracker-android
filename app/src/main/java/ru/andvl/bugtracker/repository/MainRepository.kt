@@ -27,5 +27,7 @@ class MainRepository @Inject constructor(
 
     suspend fun insertUser(user: User) = userDao.insertUser(user)
 
-    fun checkLogin() = dataStoreManager.isLoggedIn
+    fun checkLogin() = dataStoreManager.isLoggedIn2
+
+    suspend fun setLoginStatus(status: Int) = dataStoreManager.setLoginStatus(status)
 }
