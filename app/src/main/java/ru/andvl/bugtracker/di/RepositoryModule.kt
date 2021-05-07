@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
 import ru.andvl.bugtracker.network.ApiHelper
+import ru.andvl.bugtracker.persistence.ProjectDao
 import ru.andvl.bugtracker.persistence.UserDao
 import ru.andvl.bugtracker.presentation.datastore.DataStoreManager
 import ru.andvl.bugtracker.repository.MainRepository
@@ -20,9 +21,11 @@ object RepositoryModule {
         apiHelper: ApiHelper,
         userDao: UserDao,
         dataStoreManager: DataStoreManager,
+        projectDao: ProjectDao,
     ) = MainRepository(
-        apiHelper,
-        userDao,
-        dataStoreManager,
+        apiHelper = apiHelper,
+        userDao = userDao,
+        dataStoreManager = dataStoreManager,
+        projectDao = projectDao,
     )
 }

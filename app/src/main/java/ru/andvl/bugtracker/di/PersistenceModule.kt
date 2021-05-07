@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.andvl.bugtracker.R
 import ru.andvl.bugtracker.persistence.AppDatabase
+import ru.andvl.bugtracker.persistence.ProjectDao
 import ru.andvl.bugtracker.persistence.UserDao
 import javax.inject.Singleton
 
@@ -27,5 +28,11 @@ object PersistenceModule {
     @Singleton
     fun providesUserDao(appDatabase: AppDatabase): UserDao {
         return appDatabase.userDao()
+    }
+
+    @Provides
+    @Singleton
+    fun providesProjectDao(appDatabase: AppDatabase): ProjectDao {
+        return appDatabase.projectDao()
     }
 }

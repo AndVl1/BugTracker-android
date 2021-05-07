@@ -34,4 +34,15 @@ class ApiHelperImpl @Inject constructor(
 
     override suspend fun getProjects(userId: Int): ApiResponse<List<Project>> =
         apiService.getProjects(userId = userId)
+
+    override suspend fun addProject(
+        userId: Int,
+        projectName: String,
+        projectDescription: String
+    ): ApiResponse<Project> =
+        apiService.addProject(
+            userId = userId,
+            projectName = projectName,
+            projectDescription = projectDescription,
+        )
 }

@@ -10,6 +10,7 @@ import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.presentation.ui.auth.CheckEmailPage
 import ru.andvl.bugtracker.presentation.ui.auth.LoginPage
 import ru.andvl.bugtracker.presentation.ui.auth.PasswordNicknamePage
+import ru.andvl.bugtracker.presentation.ui.projects.AddProjectScreen
 import ru.andvl.bugtracker.presentation.ui.splash.SplashScreen
 import timber.log.Timber
 
@@ -43,7 +44,16 @@ fun BugTrackerApp(viewModel: MainViewModel) {
             PasswordNicknamePage(viewModel = viewModel)
         }
         composable(Destinations.MainScreenNavigation) {
-            MainScreen()
+            MainScreen(
+                viewModel = viewModel,
+                mainNavController = navController,
+            )
+        }
+        composable(Destinations.AddProject) {
+            AddProjectScreen(
+                viewModel = viewModel,
+                navController = navController,
+            )
         }
     }
 }

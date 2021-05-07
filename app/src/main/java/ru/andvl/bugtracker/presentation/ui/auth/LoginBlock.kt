@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -25,18 +23,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.popUpTo
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -45,7 +38,6 @@ import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.R
 import ru.andvl.bugtracker.navigation.Destinations
 import ru.andvl.bugtracker.presentation.ui.custom.PasswordTextField
-import timber.log.Timber
 
 @Composable
 fun LoginPage(
@@ -63,6 +55,7 @@ fun LoginPage(
             viewModel.isAuthenticationSuccessful
                 .collect{ status ->
                     if (status) {
+                        viewModel.loadProjects()
                         navController.navigate(Destinations.MainScreenNavigation) {
                             popUpTo(Destinations.Login) {inclusive = true}
                         }
@@ -187,7 +180,7 @@ fun LoginBlock(
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun LoginPreview() {
     LoginBlock(
         login = mutableStateOf(""),

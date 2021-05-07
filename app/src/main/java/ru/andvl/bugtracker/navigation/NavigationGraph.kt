@@ -9,6 +9,8 @@ object Destinations {
     const val NicknamePasswordInput = "register_password"
 
     const val MainScreenNavigation = "main_screen"
+
+    const val AddProject = "add_project"
 }
 
 class Actions(navController: NavController) {

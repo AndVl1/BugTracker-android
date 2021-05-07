@@ -9,4 +9,6 @@ import ru.andvl.bugtracker.model.User
 abstract class AppDatabase: RoomDatabase() {
 
     abstract fun userDao(): UserDao
+
+    abstract fun projectDao(): ProjectDao
 }

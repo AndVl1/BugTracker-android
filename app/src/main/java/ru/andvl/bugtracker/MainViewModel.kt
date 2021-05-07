@@ -1,12 +1,15 @@
 package ru.andvl.bugtracker
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.skydoves.sandwich.StatusCode
+import com.skydoves.sandwich.onError
 import com.skydoves.sandwich.onException
+import com.skydoves.sandwich.onFailure
+import com.skydoves.sandwich.onSuccess
 import com.skydoves.sandwich.suspendOnError
+import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,9 +17,11 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.andvl.bugtracker.model.LoginUser
+import ru.andvl.bugtracker.model.Project
 import ru.andvl.bugtracker.presentation.datastore.LoginStatus
 import ru.andvl.bugtracker.repository.MainRepository
 import timber.log.Timber
@@ -45,7 +50,7 @@ class MainViewModel @Inject constructor(
                 mainRepository.login(
                     user
                 ).suspendOnSuccess {
-                    Timber.d(statusCode.code.toString())
+                    Timber.d("user ${statusCode.code} ${response.body()?.userId}")
                     _areLoginAndPasswordCorrect.emit(this.statusCode == StatusCode.OK)
                     _isAuthenticationSuccessful.emit(this.statusCode == StatusCode.OK)
                     mainRepository.setLoginStatus(
@@ -54,6 +59,7 @@ class MainViewModel @Inject constructor(
                         else
                             LoginStatus.NOT_LOGGED_IN
                     )
+                    mainRepository.setUserId(this.response.body()?.userId ?: -1)
                 }.suspendOnError {
                     Timber.d(statusCode.code.toString())
                     _areLoginAndPasswordCorrect.emit(false)
@@ -127,12 +133,12 @@ class MainViewModel @Inject constructor(
         Timber.d(emailCheckString.value)
         _isEmailAvailable.value = emailRegex.matches(emailCheckString.value)
         if (emailRegex.matches(emailCheckString.value)) {
-            emailChangesActorChannel.offer(emailCheckString.value)
+            emailChangesActorChannel.trySend(emailCheckString.value).isSuccess
         }
     }
 
     fun checkEmail() {
-        emailChangesActorChannel.offer(emailCheckString.value)
+        emailChangesActorChannel.trySend(emailCheckString.value).isSuccess
     }
 
     /** Nickname input */
@@ -168,11 +174,56 @@ class MainViewModel @Inject constructor(
     }
 
     fun onRegisterClicked() {
-        registerActorChannel.offer(
+        registerActorChannel.trySend(
             LoginUser(
                 login = emailCheckString.value,
                 password = newUserPassword.value,
                 nickname = nickname.value
-        ))
+            )
+        ).isSuccess
+    }
+
+    /** Projects */
+
+    private val _projectsList: MutableStateFlow<List<Project>> = MutableStateFlow(ArrayList())
+    val projectsList = _projectsList.asStateFlow()
+
+
+
+    fun loadProjects() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                Timber.d("Projects?")
+                mainRepository.loadProjects()
+            }
+        }
+    }
+
+    fun getProjects() {
+        viewModelScope.launch {
+            mainRepository.getProjects()
+                .collect {
+                    _projectsList.emit(it)
+                }
+        }
+    }
+
+    /** Add Project */
+    val projectName = mutableStateOf("")
+    val projectDescription = mutableStateOf("")
+
+    fun addProject(
+        project: Project = Project(
+            id = 0,
+            name = projectName.value,
+            description = projectDescription.value
+        )
+    ) {
+        viewModelScope.launch {
+            mainRepository.addProject(project)
+        }
+        projectName.value = ""
+        projectDescription.value = ""
+        loadProjects()
     }
 }

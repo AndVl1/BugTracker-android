@@ -42,4 +42,14 @@ interface ApiService {
         @Query("userId")
         userId: Int,
     ): ApiResponse<List<Project>>
+
+    @POST("/projects/add")
+    suspend fun addProject(
+        @Query("userId")
+        userId: Int,
+        @Query("pname")
+        projectName: String,
+        @Query("pdesc")
+        projectDescription: String
+    ): ApiResponse<Project>
 }

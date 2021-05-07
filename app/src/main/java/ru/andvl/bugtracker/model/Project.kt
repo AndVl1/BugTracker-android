@@ -4,6 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+/** Represents project with its [id], [name] and [description]
+ * @property id - project id in database
+ * @property name - project name
+ * @property description - project description
+ * */
 @Entity
 data class Project(
     @PrimaryKey

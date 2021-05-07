@@ -23,7 +23,7 @@ fun ProjectCard(
     Surface(
         shape = RoundedCornerShape(8.dp),
         elevation = 8.dp,
-        modifier = Modifier.clickable(onClick = {})
+        modifier = Modifier.clickable(onClick = {}).padding(4.dp)
     ) {
         val layoutPadding = 8.dp
 
