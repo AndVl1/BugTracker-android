@@ -33,14 +33,14 @@ class DataStoreManager(context: Context) {
         loginDataStore.edit { settings ->
             settings[PreferencesKeys.IS_LOGGED_IN] = isLoggedIn
         }
-        Timber.d("DATASTORE $isLoggedIn")
+        Timber.d("isLoggedIn $isLoggedIn")
     }
 
     suspend fun setCurrentUserId(id: Int) {
         loginDataStore.edit { user ->
             user[PreferencesKeys.CURRENT_USER_ID] = id
         }
-        Timber.d("DATASTORE $id")
+        Timber.d("uId $id")
     }
 
 }

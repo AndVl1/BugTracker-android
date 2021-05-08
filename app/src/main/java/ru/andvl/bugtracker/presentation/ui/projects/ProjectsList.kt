@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -28,10 +30,16 @@ fun ProjectList(
 ) {
     viewModel.loadProjects()
     viewModel.getProjects()
-    LazyProjectsColumn(
-        projects = viewModel.projectsList,
-        onReload = { viewModel.loadProjects() }
-    )
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text(text = "Bug Tracker") })
+        },
+    ) {
+        LazyProjectsColumn(
+            projects = viewModel.projectsList,
+            onReload = { viewModel.loadProjects() }
+        )
+    }
 }
 
 @Composable
@@ -54,7 +62,7 @@ private fun LazyProjectsColumn(
             ),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        item{
+        item {
             Button(
                 onClick = { onReload() },
                 modifier = Modifier.fillMaxWidth()
@@ -78,12 +86,14 @@ private fun LazyProjectsColumn(
 fun ProjectsPreview() {
 
     LazyProjectsColumn(
-        projects = MutableStateFlow(listOf(
-            Project(0, "Project 1", "D1"),
-            Project(1, "Project 2", "D2"),
-            Project(2, "Project 3", "D3"),
-            Project(3, "Project 4", "D4"),
-            Project(4, "Project 5", "D5"),
-        )).asStateFlow()
+        projects = MutableStateFlow(
+            listOf(
+                Project(0, "Project 1", "D1"),
+                Project(1, "Project 2", "D2"),
+                Project(2, "Project 3", "D3"),
+                Project(3, "Project 4", "D4"),
+                Project(4, "Project 5", "D5"),
+            )
+        ).asStateFlow()
     )
 }

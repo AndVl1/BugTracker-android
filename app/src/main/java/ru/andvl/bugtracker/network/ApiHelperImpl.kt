@@ -10,8 +10,8 @@ class ApiHelperImpl @Inject constructor(
     private val apiService: ApiService
 ) : ApiHelper {
     // override suspend fun getUser(): ApiResponse<User> = apiService.getUserData()
-    override suspend fun getUser(user: LoginUser): ApiResponse<User> =
-        apiService.getUserData()
+    override suspend fun getUser(userId: Int): ApiResponse<User> =
+        apiService.getUserData(userId)
 
     override suspend fun login(user: LoginUser): ApiResponse<User> =
         apiService.login(

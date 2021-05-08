@@ -67,4 +67,6 @@ class MainRepository @Inject constructor(
     fun getProjects(): Flow<List<Project>> = projectDao.getProjects()
 
     suspend fun addProject(project: Project) = apiHelper.addProject(getUserId(), project.name, project.description)
+
+    fun getUser() = userDao.getUser(getUserId())
 }

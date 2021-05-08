@@ -66,24 +66,19 @@ fun LoginPage(
         LoginBlock(
             login = viewModel.login,
             password = viewModel.password,
-            passwordVisibility = viewModel.passwordVisibility,
             isLoggedIn = viewModel.areLoginAndPasswordCorrect,
             onLoginClickListener = { viewModel.onLoginButtonClickListener() },
-            onRegisterClickListener = { navController.navigate(Destinations.CheckEmail) },
-            onPasswordVisibilityChangeListener = { viewModel.onPasswordVisibilityChanged() },
-        )
+        ) { navController.navigate(Destinations.CheckEmail) }
     }
 }
 
 @Composable
-fun LoginBlock(
+private fun LoginBlock(
     login: MutableState<String>,
     password: MutableState<String>,
-    passwordVisibility: MutableState<Boolean>,
     isLoggedIn: StateFlow<Boolean>,
     onLoginClickListener: () -> Unit,
     onRegisterClickListener: () -> Unit,
-    onPasswordVisibilityChangeListener: () -> Unit,
 ) {
 
     val layoutPadding = dimensionResource(id = R.dimen.auth_padding)
@@ -181,14 +176,11 @@ fun LoginBlock(
 @SuppressLint("UnrememberedMutableState")
 @Composable
 @Preview(showBackground = true)
-fun LoginPreview() {
+private fun LoginPreview() {
     LoginBlock(
         login = mutableStateOf(""),
         password = mutableStateOf(""),
-        passwordVisibility = mutableStateOf(false),
         isLoggedIn = MutableStateFlow(false).asStateFlow(),
         onLoginClickListener = {},
-        onRegisterClickListener = {},
-        onPasswordVisibilityChangeListener = {},
-    )
+    ) {}
 }

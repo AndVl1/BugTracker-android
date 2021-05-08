@@ -21,6 +21,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import ru.andvl.bugtracker.MainViewModel
+import ru.andvl.bugtracker.presentation.ui.profile.ProfileScreen
 import ru.andvl.bugtracker.presentation.ui.projects.AddProjectScreen
 import ru.andvl.bugtracker.presentation.ui.projects.ProjectList
 
@@ -36,7 +37,9 @@ private fun BottomNavBarConfiguration(
         composable(BottomNavigationScreens.Projects.route) {
             ProjectList(viewModel = viewModel)
         }
-        composable(BottomNavigationScreens.Profile.route) {}
+        composable(BottomNavigationScreens.Profile.route) {
+            ProfileScreen(viewModel = viewModel)
+        }
         composable(BottomNavigationScreens.Tasks.route) {}
     }
 }
@@ -89,9 +92,6 @@ fun MainScreen(
         BottomNavigationScreens.Profile
     )
     Scaffold(
-        topBar = {
-            TopAppBar(title = { Text(text = "Bug Tracker")} )
-        },
         bottomBar = {
             BottomNavigation(
                 nestedNavController = nestedNavController,

@@ -8,7 +8,7 @@ import ru.andvl.bugtracker.model.User
 
 interface ApiHelper {
 
-    suspend fun getUser(user: LoginUser): ApiResponse<User>
+    suspend fun getUser(userId: Int): ApiResponse<User>
 
     suspend fun login(user: LoginUser): ApiResponse<User>
 

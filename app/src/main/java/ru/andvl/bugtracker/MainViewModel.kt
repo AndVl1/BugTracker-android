@@ -39,7 +39,6 @@ class MainViewModel @Inject constructor(
     /** Login page strings*/
     val login = mutableStateOf("")
     val password = mutableStateOf("")
-    val passwordVisibility = mutableStateOf(false)
 
     private val _areLoginAndPasswordCorrect: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val areLoginAndPasswordCorrect = _areLoginAndPasswordCorrect.asStateFlow()
@@ -50,7 +49,11 @@ class MainViewModel @Inject constructor(
                 mainRepository.login(
                     user
                 ).suspendOnSuccess {
-                    Timber.d("user ${statusCode.code} ${response.body()?.userId}")
+                    Timber.d("user ${statusCode.code} $data")
+                    this.data?.let {
+                        mainRepository.setUserId(it.userId)
+                        mainRepository.insertUser(it)
+                    }
                     _areLoginAndPasswordCorrect.emit(this.statusCode == StatusCode.OK)
                     _isAuthenticationSuccessful.emit(this.statusCode == StatusCode.OK)
                     mainRepository.setLoginStatus(
@@ -59,7 +62,6 @@ class MainViewModel @Inject constructor(
                         else
                             LoginStatus.NOT_LOGGED_IN
                     )
-                    mainRepository.setUserId(this.response.body()?.userId ?: -1)
                 }.suspendOnError {
                     Timber.d(statusCode.code.toString())
                     _areLoginAndPasswordCorrect.emit(false)
@@ -70,28 +72,12 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun onLoginChanged(login: String) {
-        this.login.value = login
-    }
-
-    fun onPasswordChanged(password: String) {
-        this.password.value = password
-    }
-
-    fun onPasswordVisibilityChanged() {
-        passwordVisibility.value = !passwordVisibility.value
-    }
-
     fun onLoginButtonClickListener() {
-        loginButtonActor.offer(
+        loginButtonActor.trySend(
             LoginUser(
                 login = login.value, password = password.value
             )
-        )
-    }
-
-    fun onRegisterClickListener() {
-        /* TODO */
+        ).isSuccess
     }
 
     /** Check email string */
@@ -118,6 +104,7 @@ class MainViewModel @Inject constructor(
                         Timber.d("Success")
                         _isEmailAvailable.emit(true)
                         _canNavigateToNext.emit(true)
+                        getProjectsVm()
                     }.suspendOnError {
                         Timber.d("Error")
                         _isEmailAvailable.emit(false)
@@ -163,6 +150,10 @@ class MainViewModel @Inject constructor(
                         else
                             LoginStatus.NOT_LOGGED_IN
                     )
+                    this.data?.let {
+                        mainRepository.insertUser(it)
+                        mainRepository.setUserId(it.userId)
+                    }
                 }.suspendOnError {
                     Timber.d(statusCode.code.toString())
                     _isAuthenticationSuccessful.emit(false)
@@ -199,6 +190,13 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getProjectsVm() {
+        mainRepository.getProjects()
+            .collect {
+                _projectsList.emit(it)
+            }
+    }
+
     fun getProjects() {
         viewModelScope.launch {
             mainRepository.getProjects()
@@ -225,5 +223,22 @@ class MainViewModel @Inject constructor(
         projectName.value = ""
         projectDescription.value = ""
         loadProjects()
+    }
+
+    /** Profile */
+    private val _userName = MutableStateFlow("")
+    val userName = _userName.asStateFlow()
+    private val _userLogin = MutableStateFlow("")
+    val userLogin = _userLogin.asStateFlow()
+
+    fun getUser() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                mainRepository.getUser().collect {
+                    _userName.value = it.name
+                    _userLogin.value = it.login
+                }
+            }
+        }
     }
 }

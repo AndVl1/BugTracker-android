@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import ru.andvl.bugtracker.MainViewModel
+import ru.andvl.bugtracker.presentation.ui.custom.Title
 
 @Composable
 fun AddProjectScreen (
@@ -77,14 +78,7 @@ private fun AddProjectContent(
         modifier = Modifier
             .padding(all = 8.dp)
     ) {
-        Text(
-            text = "Add New Project",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            fontSize = 36.sp,
-            textAlign = TextAlign.Center
-        )
+        Title(value = "Add new project")
         TextField(
             value = name.value,
             onValueChange = { value -> name.value = value },
@@ -101,7 +95,6 @@ private fun AddProjectContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
-            maxLines = 1,
         )
     }
 }

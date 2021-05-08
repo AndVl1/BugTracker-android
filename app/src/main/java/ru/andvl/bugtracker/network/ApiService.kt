@@ -3,6 +3,7 @@ package ru.andvl.bugtracker.network
 import com.skydoves.sandwich.ApiResponse
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.model.Project
@@ -28,8 +29,11 @@ interface ApiService {
         password: String
     ): ApiResponse<User>
 
-    @GET("/user")
-    suspend fun getUserData(): ApiResponse<User>
+    @GET("/users/{id}")
+    suspend fun getUserData(
+        @Path("id")
+        id: Int
+    ): ApiResponse<User>
 
     @POST("/check")
     suspend fun checkEmail(
