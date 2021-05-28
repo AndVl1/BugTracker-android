@@ -2,6 +2,7 @@ package ru.andvl.bugtracker.network
 
 import com.skydoves.sandwich.ApiResponse
 import retrofit2.http.Query
+import ru.andvl.bugtracker.model.Issue
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.model.Project
 import ru.andvl.bugtracker.model.User
@@ -27,4 +28,17 @@ interface ApiHelper {
         projectName: String,
         projectDescription: String
     ): ApiResponse<Project>
+
+    suspend fun getIssuesForProject(
+        projectId: Int
+    ): ApiResponse<List<Issue>>
+
+    suspend fun getIssuesForAssignee(
+        userId: Int
+    ): ApiResponse<List<Issue>>
+
+    suspend fun addIssue(
+        projectId: Int,
+        issue: Issue,
+    ): ApiResponse<Issue>
 }

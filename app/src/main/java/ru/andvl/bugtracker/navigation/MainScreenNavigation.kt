@@ -1,12 +1,12 @@
 package ru.andvl.bugtracker.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
@@ -21,26 +21,35 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import ru.andvl.bugtracker.MainViewModel
+import ru.andvl.bugtracker.presentation.ui.issues.IssueList
+import ru.andvl.bugtracker.presentation.ui.issues.IssuesViewModel
 import ru.andvl.bugtracker.presentation.ui.profile.ProfileScreen
-import ru.andvl.bugtracker.presentation.ui.projects.AddProjectScreen
 import ru.andvl.bugtracker.presentation.ui.projects.ProjectList
 
+@ExperimentalAnimationApi
 @Composable
 private fun BottomNavBarConfiguration(
     nestedNavController: NavHostController,
-    viewModel: MainViewModel,
+    mainViewModel: MainViewModel,
+    issuesViewModel: IssuesViewModel,
+    mainNavController: NavHostController,
 ) {
     NavHost(
         navController = nestedNavController,
         startDestination = BottomNavigationScreens.Projects.route,
     ) {
         composable(BottomNavigationScreens.Projects.route) {
-            ProjectList(viewModel = viewModel)
+            ProjectList(
+                viewModel = mainViewModel,
+                navController = mainNavController,
+            )
         }
         composable(BottomNavigationScreens.Profile.route) {
-            ProfileScreen(viewModel = viewModel)
+            ProfileScreen(viewModel = mainViewModel)
         }
-        composable(BottomNavigationScreens.Tasks.route) {}
+        composable(BottomNavigationScreens.Tasks.route) {
+            IssueList(viewModel = issuesViewModel)
+        }
     }
 }
 
@@ -58,7 +67,7 @@ private fun BottomNavigation(
                     if (currentRoute != screen.route) {
                         nestedNavController.navigate(screen.route) {
                             popUpTo = nestedNavController.graph.startDestination
-//                            launchSingleTop = true
+                            launchSingleTop = true
                         }
                     }
                 },
@@ -80,9 +89,11 @@ fun currentRoute(navController: NavHostController): String? {
     return navBackStackEntry?.arguments?.getString(KEY_ROUTE)
 }
 
+@ExperimentalAnimationApi
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel,
+    mainViewModel: MainViewModel,
+    issuesViewModel: IssuesViewModel,
     mainNavController: NavHostController,
 ) {
     val nestedNavController = rememberNavController()
@@ -109,7 +120,9 @@ fun MainScreen(
     ) {
         BottomNavBarConfiguration(
             nestedNavController = nestedNavController,
-            viewModel = viewModel,
+            mainViewModel = mainViewModel,
+            issuesViewModel = issuesViewModel,
+            mainNavController = mainNavController,
         )
     }
 }

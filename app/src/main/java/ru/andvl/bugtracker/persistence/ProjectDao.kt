@@ -14,4 +14,7 @@ interface ProjectDao {
 
     @Query("SELECT * FROM Project")
     fun getProjects(): Flow<List<Project>>
+
+    @Query("SELECT * FROM Project WHERE id=:id")
+    fun getProject(id: Int): Flow<Project>
 }

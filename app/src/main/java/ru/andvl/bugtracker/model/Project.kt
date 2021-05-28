@@ -17,5 +17,7 @@ data class Project(
     @SerializedName("projectName")
     val name: String,
     @SerializedName("projectDescription")
-    val description: String
+    val description: String,
+    @SerializedName("issuesCount")
+    val issuesCount: Int = 0,
 )

@@ -1,6 +1,8 @@
 package ru.andvl.bugtracker.network
 
 import com.skydoves.sandwich.ApiResponse
+import kotlinx.coroutines.flow.Flow
+import ru.andvl.bugtracker.model.Issue
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.model.Project
 import ru.andvl.bugtracker.model.User
@@ -45,4 +47,13 @@ class ApiHelperImpl @Inject constructor(
             projectName = projectName,
             projectDescription = projectDescription,
         )
+
+    override suspend fun getIssuesForProject(projectId: Int): ApiResponse<List<Issue>> =
+        apiService.getIssuesForProject(projectId)
+
+    override suspend fun getIssuesForAssignee(userId: Int): ApiResponse<List<Issue>> =
+        apiService.getIssuesForAssignee(userId)
+
+    override suspend fun addIssue(projectId: Int, issue: Issue): ApiResponse<Issue> =
+        apiService.addIssue(projectId, issue)
 }

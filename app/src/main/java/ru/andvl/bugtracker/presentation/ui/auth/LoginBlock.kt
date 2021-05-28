@@ -55,7 +55,6 @@ fun LoginPage(
             viewModel.isAuthenticationSuccessful
                 .collect{ status ->
                     if (status) {
-                        viewModel.loadProjects()
                         navController.navigate(Destinations.MainScreenNavigation) {
                             popUpTo(Destinations.Login) {inclusive = true}
                         }

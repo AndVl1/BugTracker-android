@@ -4,12 +4,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.skydoves.sandwich.StatusCode
-import com.skydoves.sandwich.onError
 import com.skydoves.sandwich.onException
-import com.skydoves.sandwich.onFailure
-import com.skydoves.sandwich.onSuccess
 import com.skydoves.sandwich.suspendOnError
-import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,14 +13,17 @@ import kotlinx.coroutines.channels.actor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.andvl.bugtracker.model.Issue
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.model.Project
 import ru.andvl.bugtracker.presentation.datastore.LoginStatus
 import ru.andvl.bugtracker.repository.MainRepository
 import timber.log.Timber
+import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,6 +52,8 @@ class MainViewModel @Inject constructor(
                     this.data?.let {
                         mainRepository.setUserId(it.userId)
                         mainRepository.insertUser(it)
+                        loadProjects(it.userId)
+                        loadIssuesForUser(it.userId)
                     }
                     _areLoginAndPasswordCorrect.emit(this.statusCode == StatusCode.OK)
                     _isAuthenticationSuccessful.emit(this.statusCode == StatusCode.OK)
@@ -93,7 +94,7 @@ class MainViewModel @Inject constructor(
     private val emailChangesActorChannel = viewModelScope.actor<String> {
         withContext(Dispatchers.IO) {
             for (change in channel) {
-                if (!emailRegex.matches(emailCheckString.value)){
+                if (!emailRegex.matches(emailCheckString.value)) {
                     Timber.d("Wrong email")
                     _isEmailAvailable.emit(false)
                 } else {
@@ -104,7 +105,7 @@ class MainViewModel @Inject constructor(
                         Timber.d("Success")
                         _isEmailAvailable.emit(true)
                         _canNavigateToNext.emit(true)
-                        getProjectsVm()
+                        getProjectsInitial()
                     }.suspendOnError {
                         Timber.d("Error")
                         _isEmailAvailable.emit(false)
@@ -178,8 +179,23 @@ class MainViewModel @Inject constructor(
 
     private val _projectsList: MutableStateFlow<List<Project>> = MutableStateFlow(ArrayList())
     val projectsList = _projectsList.asStateFlow()
+    private val _selectedProject: MutableStateFlow<Project> = MutableStateFlow(
+        Project(
+            id = -1,
+            name = "Loading...",
+            description = ""
+        )
+    )
+    val selectedProject = _selectedProject.asStateFlow()
 
-
+    private fun loadProjects(id: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                Timber.d("Projects?")
+                mainRepository.loadProjects(id)
+            }
+        }
+    }
 
     fun loadProjects() {
         viewModelScope.launch {
@@ -190,7 +206,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getProjectsVm() {
+    private suspend fun getProjectsInitial() {
         mainRepository.getProjects()
             .collect {
                 _projectsList.emit(it)
@@ -206,6 +222,28 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun getProject(id: Int) {
+        viewModelScope.launch {
+            mainRepository.getProject(id)
+                .collect {
+                    _selectedProject.emit(it)
+                }
+        }
+    }
+
+    private val _issuesList: MutableStateFlow<List<Issue>> =
+        MutableStateFlow(ArrayList())
+    val issuesList = _issuesList.asStateFlow()
+
+    fun getIssues(projectId: Int) {
+        viewModelScope.launch {
+            _issuesList.emit(
+                mainRepository
+                    .loadIssues(projectId)
+            )
+        }
+    }
+
     /** Add Project */
     val projectName = mutableStateOf("")
     val projectDescription = mutableStateOf("")
@@ -214,7 +252,7 @@ class MainViewModel @Inject constructor(
         project: Project = Project(
             id = 0,
             name = projectName.value,
-            description = projectDescription.value
+            description = projectDescription.value,
         )
     ) {
         viewModelScope.launch {
@@ -234,10 +272,24 @@ class MainViewModel @Inject constructor(
     fun getUser() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                mainRepository.getUser().collect {
-                    _userName.value = it.name
-                    _userLogin.value = it.login
+                try {
+                    mainRepository.getUser().collect {
+                        _userName.value = it.name
+                        _userLogin.value = it.login
+                    }
+                } catch (e: Exception) {
+                    _userName.value = "Reload"
+                    _userLogin.value = "the app"
                 }
+            }
+        }
+    }
+
+    /** Issues */
+    private fun loadIssuesForUser(id: Int) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                mainRepository.loadIssuesForUser(id)
             }
         }
     }

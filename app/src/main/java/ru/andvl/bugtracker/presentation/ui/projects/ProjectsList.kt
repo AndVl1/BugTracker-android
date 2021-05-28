@@ -1,7 +1,6 @@
 package ru.andvl.bugtracker.presentation.ui.projects
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,10 +12,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,6 +26,7 @@ import timber.log.Timber
 @Composable
 fun ProjectList(
     viewModel: MainViewModel,
+    navController: NavHostController? = null,
 ) {
     viewModel.loadProjects()
     viewModel.getProjects()
@@ -37,7 +37,8 @@ fun ProjectList(
     ) {
         LazyProjectsColumn(
             projects = viewModel.projectsList,
-            onReload = { viewModel.loadProjects() }
+            onReload = { viewModel.loadProjects() },
+            navController = navController,
         )
     }
 }
@@ -46,10 +47,11 @@ fun ProjectList(
 private fun LazyProjectsColumn(
     projects: StateFlow<List<Project>>,
     onReload: () -> Unit = {},
+    navController: NavHostController? = null,
 ) {
     Timber.d("there are ${projects.value.size} projects")
 
-    val p = projects.collectAsState()
+    val projectsState = projects.collectAsState()
 
     LazyColumn(
         modifier = Modifier
@@ -71,11 +73,13 @@ private fun LazyProjectsColumn(
             }
         }
 
-        items(p.value) { project ->
+        items(projectsState.value) { project ->
             ProjectCard(
+                id = project.id,
                 name = project.name,
                 description = project.description,
-                issuesCount = 0
+                issuesCount = project.issuesCount,
+                navController = navController,
             )
         }
     }
@@ -88,11 +92,11 @@ fun ProjectsPreview() {
     LazyProjectsColumn(
         projects = MutableStateFlow(
             listOf(
-                Project(0, "Project 1", "D1"),
-                Project(1, "Project 2", "D2"),
-                Project(2, "Project 3", "D3"),
-                Project(3, "Project 4", "D4"),
-                Project(4, "Project 5", "D5"),
+                Project(0, "Project 1", "D1", 1),
+                Project(1, "Project 2", "D2",2),
+                Project(2, "Project 3", "D3", 0),
+                Project(3, "Project 4", "D4", 3),
+                Project(4, "Project 5", "D5", 8),
             )
         ).asStateFlow()
     )

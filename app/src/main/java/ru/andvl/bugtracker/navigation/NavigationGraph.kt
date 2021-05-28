@@ -11,6 +11,8 @@ object Destinations {
     const val MainScreenNavigation = "main_screen"
 
     const val AddProject = "add_project"
+
+    const val ProjectIssues = "project_issues"
 }
 
 class Actions(navController: NavController) {

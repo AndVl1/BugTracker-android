@@ -8,22 +8,33 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.navigate
+import ru.andvl.bugtracker.navigation.Destinations
+import timber.log.Timber
 
 @Composable
 fun ProjectCard(
+    id: Int,
     name: String,
     description: String,
-    issuesCount: Int
+    issuesCount: Int,
+    navController: NavHostController? = null
 ) {
     Surface(
         shape = RoundedCornerShape(8.dp),
         elevation = 8.dp,
-        modifier = Modifier.clickable(onClick = {}).padding(4.dp)
+        modifier = Modifier
+            .clickable(onClick = {
+                Timber.d("$id")
+                navController
+                    ?.navigate("${Destinations.ProjectIssues}/$id")
+            })
+            .padding(4.dp)
     ) {
         val layoutPadding = 8.dp
 
@@ -70,6 +81,7 @@ fun ProjectCard(
 @Composable
 fun ProjectCardPreview() {
     ProjectCard(
+        id = 0,
         name = "Name 1",
         description = "Description Blablabla",
         issuesCount = 5
