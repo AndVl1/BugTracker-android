@@ -7,6 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import ru.andvl.bugtracker.model.Comment
 import ru.andvl.bugtracker.model.Issue
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.model.Project
@@ -76,7 +77,25 @@ interface ApiService {
     suspend fun addIssue(
         @Path("id")
         projectId: Int,
-        @Body
+        @Query("issue")
         issue: Issue,
     ): ApiResponse<Issue>
+
+    @GET("/issues/{id}/comments")
+    suspend fun getComments(
+        @Path("id")
+        issueId: Int
+    ): ApiResponse<List<Comment>>
+
+    @POST("/issues/{id}/comments/add")
+    suspend fun addComment(
+        @Path("id")
+        issueId: Int,
+        @Query("authorId")
+        authorId: Int,
+        @Query("date")
+        date: Long,
+        @Query("text")
+        text: String,
+    )
 }

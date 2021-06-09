@@ -3,7 +3,10 @@ package ru.andvl.bugtracker.repository
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
+import ru.andvl.bugtracker.model.Comment
 import ru.andvl.bugtracker.model.Issue
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.model.Project
@@ -23,6 +26,8 @@ class MainRepository @Inject constructor(
     private val issueDao: IssueDao,
     private val dataStoreManager: DataStoreManager,
 ) : Repository {
+
+    // AUTH ----
 
     suspend fun login(user: LoginUser) = apiHelper.login(user)
 
@@ -45,6 +50,14 @@ class MainRepository @Inject constructor(
     private fun getUserId() =
         dataStoreManager.currentUserId
 
+    fun getCurrentUser() = userDao.getUser(getUserId())
+
+    suspend fun getUser(id: Int) = apiHelper.getUser(id)
+
+    // PROJECTS ----
+
+    /** Loading projects for user
+     * @param id - user id */
     suspend fun loadProjects(id: Int) {
         val projects = arrayListOf<Project>()
         apiHelper.getProjects(id)
@@ -61,6 +74,8 @@ class MainRepository @Inject constructor(
         }
     }
 
+    /** Loading all projects for current user
+     * User id loading from data store */
     suspend fun loadProjects() {
         val projects = arrayListOf<Project>()
         apiHelper.getProjects(getUserId())
@@ -77,6 +92,8 @@ class MainRepository @Inject constructor(
         }
     }
 
+    /** Load issue for user
+     * [id] - user id */
     suspend fun loadIssuesForUser(id: Int) {
         val issues = arrayListOf<Issue>()
         apiHelper.getIssuesForAssignee(id)
@@ -92,6 +109,8 @@ class MainRepository @Inject constructor(
         }
     }
 
+    /** Load projects for current user
+     * User id loading from data store*/
     suspend fun loadIssuesForUser() {
         val issues = arrayListOf<Issue>()
         apiHelper.getIssuesForAssignee(getUserId())
@@ -106,6 +125,15 @@ class MainRepository @Inject constructor(
             issueDao.insertIssue(it)
         }
     }
+
+    fun getProjects(): Flow<List<Project>> = projectDao.getProjects()
+
+    fun getProject(id: Int): Flow<Project> = projectDao.getProject(id)
+
+    suspend fun addProject(project: Project) =
+        apiHelper.addProject(getUserId(), project.name, project.description)
+
+    // ISSUES ----
 
     fun getIssues(): Flow<List<Issue>> = issueDao.getIssues()
 
@@ -124,13 +152,49 @@ class MainRepository @Inject constructor(
         return issues
     }
 
+    suspend fun addIssue(
+        name: String,
+        description: String,
+        date: Long,
+        assigneeId: Int?,
+        projectId: Int
+    ): Issue? {
+        val issue = Issue(
+            id = 0,
+            description = description,
+            issueName = name,
+            projectId = projectId,
+            deadline = date,
+            assigneeId = assigneeId,
+            authorId = getUserId()
+        )
+        var returned: Issue? = null
+        apiHelper.addIssue(issue).suspendOnSuccess {
+            returned = data
+        }
+        return returned
+    }
 
-    fun getProjects(): Flow<List<Project>> = projectDao.getProjects()
+    fun getIssue(id: Int) = issueDao.getIssue(id)
+    // COMMENTS ---
 
-    fun getProject(id: Int): Flow<Project> = projectDao.getProject(id)
+    suspend fun getComments(issueId: Int): List<Comment> {
+        val comments = ArrayList<Comment>()
+        apiHelper.getComments(issueId)
+            .suspendOnSuccess {
+                data?.forEach { comment ->
+                    comments.add(comment)
+                }
+            }
+        return comments
+    }
 
-    suspend fun addProject(project: Project) =
-        apiHelper.addProject(getUserId(), project.name, project.description)
-
-    fun getUser() = userDao.getUser(getUserId())
+    suspend fun addComment(
+        issueId: Int,
+        authorId: Int = getUserId(),
+        date: Long = System.currentTimeMillis(),
+        text: String
+    ) {
+        apiHelper.addComment(issueId, authorId, date, text)
+    }
 }

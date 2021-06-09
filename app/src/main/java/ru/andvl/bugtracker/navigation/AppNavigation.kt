@@ -13,6 +13,8 @@ import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.presentation.ui.auth.CheckEmailPage
 import ru.andvl.bugtracker.presentation.ui.auth.LoginPage
 import ru.andvl.bugtracker.presentation.ui.auth.PasswordNicknamePage
+import ru.andvl.bugtracker.presentation.ui.issues.AddIssue
+import ru.andvl.bugtracker.presentation.ui.issues.IssuePage
 import ru.andvl.bugtracker.presentation.ui.issues.IssuesViewModel
 import ru.andvl.bugtracker.presentation.ui.issues.ProjectsIssuesPage
 import ru.andvl.bugtracker.presentation.ui.projects.AddProjectScreen
@@ -73,6 +75,24 @@ fun BugTrackerApp(
                 projectId = backStackEntry.arguments?.getInt("projectId") ?: -1,
                 navHostController = navController,
                 viewModel = mainViewModel
+            )
+        }
+        composable(
+            route = "${Destinations.AddIssue}/{projectId}",
+            arguments = listOf(navArgument("projectId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            AddIssue(
+                projectId = backStackEntry.arguments?.getInt("projectId") ?: -1,
+                viewModel = issuesViewModel,
+            )
+        }
+        composable(
+            route = "${Destinations.IssuePage}/{issueId}",
+            arguments = listOf(navArgument("issueId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            IssuePage(
+                viewModel = issuesViewModel,
+                issueId = backStackEntry.arguments?.getInt("issueId") ?: -1
             )
         }
     }

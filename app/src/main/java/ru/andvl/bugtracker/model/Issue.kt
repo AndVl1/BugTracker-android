@@ -3,6 +3,7 @@ package ru.andvl.bugtracker.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import ru.andvl.bugtracker.utils.DateConverter
 import ru.andvl.bugtracker.utils.LabelConverter
@@ -34,7 +35,15 @@ data class Issue(
     @SerializedName("labelId")
     val labelId: Int = Label.DOCS.value,
     @SerializedName("projectIssueNumber")
-    val projectIssueNumber: Int,
+    val projectIssueNumber: Int = 0,
     @SerializedName("projectId")
     val projectId: Int,
-)
+    @SerializedName("assigneeId")
+    val assigneeId: Int? = null,
+    @SerializedName("authorId")
+    val authorId: Int
+) {
+    override fun toString(): String {
+        return Gson().toJson(this)
+    }
+}

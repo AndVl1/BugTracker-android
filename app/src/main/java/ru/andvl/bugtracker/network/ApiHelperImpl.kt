@@ -2,6 +2,7 @@ package ru.andvl.bugtracker.network
 
 import com.skydoves.sandwich.ApiResponse
 import kotlinx.coroutines.flow.Flow
+import ru.andvl.bugtracker.model.Comment
 import ru.andvl.bugtracker.model.Issue
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.model.Project
@@ -54,6 +55,18 @@ class ApiHelperImpl @Inject constructor(
     override suspend fun getIssuesForAssignee(userId: Int): ApiResponse<List<Issue>> =
         apiService.getIssuesForAssignee(userId)
 
-    override suspend fun addIssue(projectId: Int, issue: Issue): ApiResponse<Issue> =
-        apiService.addIssue(projectId, issue)
+    override suspend fun addIssue(issue: Issue): ApiResponse<Issue> =
+        apiService.addIssue(issue.projectId, issue)
+
+    override suspend fun getComments(issueId: Int): ApiResponse<List<Comment>> =
+        apiService.getComments(issueId)
+
+    override suspend fun addComment(issueId: Int, authorId: Int, date: Long, text: String) {
+        apiService.addComment(
+            issueId = issueId,
+            authorId = authorId,
+            date = date,
+            text = text,
+        )
+    }
 }

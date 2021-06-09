@@ -10,11 +10,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -27,11 +29,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.model.Issue
+import ru.andvl.bugtracker.navigation.Destinations
+import ru.andvl.bugtracker.presentation.ui.custom.BigCenteredText
 import ru.andvl.bugtracker.presentation.ui.custom.SubTitle
 import ru.andvl.bugtracker.presentation.ui.custom.Title
 
 // сверху - picker для фильтров по статусу и лейблу.
 // по умолчанию - показываются все
+/** Issue, according to selected project */
 @Composable
 fun ProjectsIssuesPage(
     projectId: Int,
@@ -39,14 +44,31 @@ fun ProjectsIssuesPage(
     viewModel: MainViewModel,
 ){
     viewModel.getIssues(projectId)
+    viewModel.getProject(projectId)
     val project = viewModel.selectedProject.collectAsState()
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = project.value.name)})
+            TopAppBar(
+                title = { Text(text = project.value.name) },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navHostController?.popBackStack()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Go back"
+                        )
+                    }
+                },
+            )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO*/ }
+                onClick = {
+                    navHostController
+                        ?.navigate("${Destinations.AddIssue}/$projectId") }
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add new issue")
             }
@@ -56,6 +78,8 @@ fun ProjectsIssuesPage(
     }
 }
 
+/** Issues, assigned to user
+ * Part of bottom navigation */
 @ExperimentalAnimationApi
 @Composable
 fun IssueList(
@@ -105,14 +129,7 @@ private fun LazyIssueColumn(
             }
         }
     } else {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Column {
-                Title(value = "No issues")
-            }
-        }
+        BigCenteredText(text = "No Issues")
     }
 }
 
@@ -128,6 +145,7 @@ private fun IssuesListPreview() {
                     description = "Descr",
                     projectIssueNumber = 1,
                     projectId = -1,
+                    authorId = 1,
                 ),
                 Issue(
                     id = 4,
@@ -135,6 +153,7 @@ private fun IssuesListPreview() {
                     description = "Descr 13345",
                     projectIssueNumber = 3,
                     projectId = -1,
+                    authorId = 1,
                 ),
                 Issue(
                     id = 6,
@@ -142,6 +161,7 @@ private fun IssuesListPreview() {
                     description = "Description 12345",
                     projectIssueNumber = 5,
                     projectId = -1,
+                    authorId = 1,
                 ),
             )
         ).asStateFlow()

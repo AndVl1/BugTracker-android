@@ -13,6 +13,8 @@ object Destinations {
     const val AddProject = "add_project"
 
     const val ProjectIssues = "project_issues"
+    const val AddIssue = "add_issue"
+    const val IssuePage = "issue_page"
 }
 
 class Actions(navController: NavController) {

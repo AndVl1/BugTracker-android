@@ -1,7 +1,7 @@
 package ru.andvl.bugtracker.network
 
 import com.skydoves.sandwich.ApiResponse
-import retrofit2.http.Query
+import ru.andvl.bugtracker.model.Comment
 import ru.andvl.bugtracker.model.Issue
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.model.Project
@@ -38,7 +38,17 @@ interface ApiHelper {
     ): ApiResponse<List<Issue>>
 
     suspend fun addIssue(
-        projectId: Int,
         issue: Issue,
     ): ApiResponse<Issue>
+
+    suspend fun getComments(
+        issueId: Int
+    ): ApiResponse<List<Comment>>
+
+    suspend fun addComment(
+        issueId: Int,
+        authorId: Int,
+        date: Long,
+        text: String,
+    )
 }

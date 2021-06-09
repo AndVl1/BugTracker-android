@@ -14,4 +14,7 @@ interface IssueDao {
 
     @Query("SELECT * FROM Issue")
     fun getIssues(): Flow<List<Issue>>
+
+    @Query("SELECT * FROM Issue WHERE id = :id")
+    fun getIssue(id: Int): Flow<Issue>
 }
