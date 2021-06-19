@@ -2,15 +2,15 @@ package ru.andvl.bugtracker.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 @Entity
 data class User(
-    @SerializedName("userId")
+    @field:Json(name = "userId")
     @PrimaryKey
     val userId: Int,
-    @SerializedName("login")
+    @field:Json(name = "login")
     val login: String,
-    @SerializedName("name")
+    @field:Json(name = "name")
     val name: String,
 )

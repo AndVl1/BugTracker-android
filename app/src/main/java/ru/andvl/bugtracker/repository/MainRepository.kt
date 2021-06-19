@@ -1,11 +1,15 @@
 package ru.andvl.bugtracker.repository
 
+import com.skydoves.sandwich.suspendOnError
 import com.skydoves.sandwich.suspendOnException
 import com.skydoves.sandwich.suspendOnSuccess
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import ru.andvl.bugtracker.model.Comment
 import ru.andvl.bugtracker.model.Issue
 import ru.andvl.bugtracker.model.LoginUser
@@ -45,7 +49,10 @@ class MainRepository @Inject constructor(
 
     suspend fun setLoginStatus(status: Int) = dataStoreManager.setLoginStatus(status)
 
-    suspend fun setUserId(id: Int) = dataStoreManager.setCurrentUserId(id)
+    suspend fun setUserId(id: Int) {
+        Timber.d("user id $id")
+        dataStoreManager.setCurrentUserId(id)
+    }
 
     private fun getUserId() =
         dataStoreManager.currentUserId
@@ -135,15 +142,20 @@ class MainRepository @Inject constructor(
 
     // ISSUES ----
 
-    fun getIssues(): Flow<List<Issue>> = issueDao.getIssues()
+    fun getIssuesForUser(): Flow<List<Issue>> = issueDao.getIssuesForUser(
+        id = getUserId()
+    )
 
     suspend fun loadIssues(projectId: Int): List<Issue> {
         val issuesResponse = apiHelper.getIssuesForProject(projectId)
         val issues = arrayListOf<Issue>()
         issuesResponse
             .suspendOnSuccess {
-                this.data?.forEach {
-                    issues.add(it)
+                this.data?.forEach { issue ->
+                    withContext(Dispatchers.IO) {
+                        issueDao.insertIssue(issue)
+                    }
+                    issues.add(issue)
                 }
             }
             .suspendOnException {
@@ -157,8 +169,11 @@ class MainRepository @Inject constructor(
         description: String,
         date: Long,
         assigneeId: Int?,
-        projectId: Int
+        projectId: Int,
+        labelId: Int,
     ): Issue? {
+        val authorId = getUserId()
+        Timber.d(authorId.toString())
         val issue = Issue(
             id = 0,
             description = description,
@@ -166,16 +181,60 @@ class MainRepository @Inject constructor(
             projectId = projectId,
             deadline = date,
             assigneeId = assigneeId,
-            authorId = getUserId()
+            authorId = authorId,
+            labelId = labelId,
         )
         var returned: Issue? = null
         apiHelper.addIssue(issue).suspendOnSuccess {
             returned = data
+        }.suspendOnException {
+            Timber.d(exception.localizedMessage)
+        }.suspendOnError {
+            Timber.d(errorBody.toString())
         }
         return returned
     }
 
-    fun getIssue(id: Int) = issueDao.getIssue(id)
+    suspend fun getIssue(id: Int): Issue =
+        withContext(Dispatchers.IO) {
+             issueDao.getIssue(id)
+        }
+
+    suspend fun updateIssueStatus(
+        issue: Issue,
+        status: Int,
+    ) {
+        withContext(Dispatchers.IO) {
+            apiHelper.updateIssue(issue, status)
+                .suspendOnSuccess {
+                    Timber.d(this.data.toString())
+                    this.data?.let { issue ->
+                        issueDao.updateIssue(issue)
+                    }
+                }.suspendOnError {
+                    Timber.d(this.toString())
+                }.suspendOnException {
+                    Timber.d(this.toString())
+                }
+        }
+    }
+
+    suspend fun getUsersForProject(projectId: Int) =
+        withContext(Dispatchers.IO) {
+            val users = arrayListOf<User>()
+            apiHelper.getProjectUsers(projectId)
+                .suspendOnSuccess {
+                    data?.forEach {
+                        users.add(it)
+                    }
+                }.suspendOnError {
+                    Timber.d(this.toString())
+                }.suspendOnException {
+                    Timber.d(this.toString())
+                }
+            return@withContext users
+        }
+
     // COMMENTS ---
 
     suspend fun getComments(issueId: Int): List<Comment> {
@@ -186,6 +245,8 @@ class MainRepository @Inject constructor(
                     comments.add(comment)
                 }
             }
+            .suspendOnError { Timber.d(this.errorBody.toString()) }
+            .suspendOnException { Timber.d(this.message) }
         return comments
     }
 

@@ -1,13 +1,13 @@
 package ru.andvl.bugtracker.model
 
 import androidx.compose.runtime.Immutable
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 @Immutable
 data class LoginUser(
-    @SerializedName("email")
+    @field:Json(name = "email")
     val login: String,
     val password: String = "",
-    @SerializedName("name")
+    @field:Json(name = "name")
     val nickname: String = ""
 )

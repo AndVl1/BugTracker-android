@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import ru.andvl.bugtracker.model.Issue
 
@@ -16,5 +17,11 @@ interface IssueDao {
     fun getIssues(): Flow<List<Issue>>
 
     @Query("SELECT * FROM Issue WHERE id = :id")
-    fun getIssue(id: Int): Flow<Issue>
+    fun getIssuesForUser(id: Int): Flow<List<Issue>>
+
+    @Query("SELECT * FROM Issue WHERE id = :id")
+    suspend fun getIssue(id: Int): Issue
+
+    @Update
+    suspend fun updateIssue(issue: Issue)
 }

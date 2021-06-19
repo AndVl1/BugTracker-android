@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import ru.andvl.bugtracker.navigation.Destinations
 
 @Composable
 fun IssueCard(
@@ -28,10 +29,12 @@ fun IssueCard(
         shape = RoundedCornerShape(8.dp),
         elevation = 8.dp,
         modifier = Modifier
-            .clickable(onClick = {})
+            .clickable(onClick = {
+                navController
+                    ?.navigate("${Destinations.IssuePage}/$id")
+            })
             .padding(4.dp)
-            .fillMaxWidth()
-            .clickable(onClick = {}),
+            .fillMaxWidth(),
     ) {
         Column(
             modifier = Modifier.padding(8.dp),

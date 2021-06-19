@@ -3,6 +3,7 @@ package ru.andvl.bugtracker.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 /** Represents project with its [id], [name] and [description]
  * @property id - project id in database
@@ -12,12 +13,12 @@ import com.google.gson.annotations.SerializedName
 @Entity
 data class Project(
     @PrimaryKey
-    @SerializedName("projectId")
+    @field:Json(name = "projectId")
     val id: Int,
-    @SerializedName("projectName")
+    @field:Json(name = "projectName")
     val name: String,
-    @SerializedName("projectDescription")
+    @field:Json(name = "projectDescription")
     val description: String,
-    @SerializedName("issuesCount")
+    @field:Json(name = "issuesCount")
     val issuesCount: Int = 0,
 )

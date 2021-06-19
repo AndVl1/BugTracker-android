@@ -74,7 +74,10 @@ fun ProjectsIssuesPage(
             }
         }
     ) {
-        LazyIssueColumn(issues = viewModel.issuesList)
+        LazyIssueColumn(
+            issues = viewModel.issuesList,
+            navHostController = navHostController
+        )
     }
 }
 
@@ -83,7 +86,8 @@ fun ProjectsIssuesPage(
 @ExperimentalAnimationApi
 @Composable
 fun IssueList(
-    viewModel: IssuesViewModel
+    viewModel: IssuesViewModel,
+    navHostController: NavHostController? = null,
 ) {
     viewModel.getIssues()
     Scaffold(
@@ -97,14 +101,18 @@ fun IssueList(
                 onCardArrowClick = { viewModel.onArrowClicked() }, 
                 expanded = filterExpanded.value
             )
-            LazyIssueColumn(issues = viewModel.issuesList)
+            LazyIssueColumn(
+                issues = viewModel.issuesList,
+                navHostController = navHostController
+            )
         }
     }
 }
 
 @Composable
 private fun LazyIssueColumn(
-    issues: StateFlow<List<Issue>>
+    issues: StateFlow<List<Issue>>,
+    navHostController: NavHostController? = null
 ) {
     val issuesState = issues.collectAsState()
 
@@ -124,7 +132,8 @@ private fun LazyIssueColumn(
                 IssueCard(
                     id = issue.projectIssueNumber,
                     name = issue.issueName,
-                    description = issue.description
+                    description = issue.description,
+                    navController = navHostController,
                 )
             }
         }

@@ -2,6 +2,7 @@ package ru.andvl.bugtracker.network
 
 import com.skydoves.sandwich.ApiResponse
 import kotlinx.coroutines.flow.Flow
+import retrofit2.http.Path
 import ru.andvl.bugtracker.model.Comment
 import ru.andvl.bugtracker.model.Issue
 import ru.andvl.bugtracker.model.LoginUser
@@ -35,6 +36,9 @@ class ApiHelperImpl @Inject constructor(
     override suspend fun checkEmail(email: String): ApiResponse<String> =
         apiService.checkEmail(email = email)
 
+    override suspend fun getProjectUsers(projectId: Int): ApiResponse<List<User>> =
+        apiService.getProjectUsers(projectId)
+
     override suspend fun getProjects(userId: Int): ApiResponse<List<Project>> =
         apiService.getProjects(userId = userId)
 
@@ -58,15 +62,24 @@ class ApiHelperImpl @Inject constructor(
     override suspend fun addIssue(issue: Issue): ApiResponse<Issue> =
         apiService.addIssue(issue.projectId, issue)
 
+    override suspend fun updateIssue(issue: Issue, status: Int): ApiResponse<Issue> =
+        apiService.updateIssue(issue = issue, status = status, projectId = issue.projectId)
+
     override suspend fun getComments(issueId: Int): ApiResponse<List<Comment>> =
         apiService.getComments(issueId)
 
-    override suspend fun addComment(issueId: Int, authorId: Int, date: Long, text: String) {
-        apiService.addComment(
+    override suspend fun addComment(
+        issueId: Int,
+        authorId: Int,
+        date: Long,
+        text: String
+    ): ApiResponse<Comment> {
+        return apiService.addComment(
             issueId = issueId,
             authorId = authorId,
             date = date,
             text = text,
         )
     }
+
 }

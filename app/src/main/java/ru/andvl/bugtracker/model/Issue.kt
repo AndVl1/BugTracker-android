@@ -3,47 +3,56 @@ package ru.andvl.bugtracker.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
-import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
-import ru.andvl.bugtracker.utils.DateConverter
-import ru.andvl.bugtracker.utils.LabelConverter
-import ru.andvl.bugtracker.utils.StatusConverter
-import java.util.*
+import com.squareup.moshi.Json
+import com.squareup.moshi.Moshi
+import ru.andvl.bugtracker.utils.AssigneeConverter
 
 @Entity
-//@TypeConverters(
+@TypeConverters(
 //    DateConverter::class,
 //    StatusConverter::class,
 //    LabelConverter::class,
-//)
+//    AssigneeConverter::class
+)
 data class Issue(
     @PrimaryKey
-    @SerializedName("issueId")
+    @field:Json(name = "issueId")
     val id: Int,
-    @SerializedName("name")
+    @field:Json(name = "name")
     val issueName: String,
-    @SerializedName("description")
+    @field:Json(name = "description")
     val description: String,
-    @SerializedName("releaseVersion")
+    @field:Json(name = "releaseVersion")
     val releaseVersion: String = "",
-    @SerializedName("creationDate")
+    @field:Json(name = "creationDate")
     val creationDate: Long = System.currentTimeMillis(),
-    @SerializedName("deadline")
+    @field:Json(name = "deadline")
     val deadline: Long? = null,
-    @SerializedName("statusId")
+    @field:Json(name = "statusId")
     val statusId: Int = Status.NEW.value,
-    @SerializedName("labelId")
+    @field:Json(name = "labelId")
     val labelId: Int = Label.DOCS.value,
-    @SerializedName("projectIssueNumber")
+    @field:Json(name = "projectIssueNumber")
     val projectIssueNumber: Int = 0,
-    @SerializedName("projectId")
+    @field:Json(name = "projectId")
     val projectId: Int,
-    @SerializedName("assigneeId")
+    @field:Json(name = "assigneeId")
     val assigneeId: Int? = null,
-    @SerializedName("authorId")
-    val authorId: Int
+    @field:Json(name = "authorId")
+    val authorId: Int,
 ) {
     override fun toString(): String {
-        return Gson().toJson(this)
+        val moshi = Moshi.Builder().build()
+        val jsonAdapter = moshi.adapter(Issue::class.java)
+        return jsonAdapter.toJson(this)
     }
+
 }
+
+data class AssigneeID (
+    @field:Json(name = "Int32")
+    val value: Int,
+
+    @field:Json(name = "Valid")
+    val valid: Boolean
+)

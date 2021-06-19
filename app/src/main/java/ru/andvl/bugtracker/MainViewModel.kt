@@ -18,10 +18,10 @@ import kotlinx.coroutines.withContext
 import ru.andvl.bugtracker.model.Issue
 import ru.andvl.bugtracker.model.LoginUser
 import ru.andvl.bugtracker.model.Project
+import ru.andvl.bugtracker.model.User
 import ru.andvl.bugtracker.presentation.datastore.LoginStatus
 import ru.andvl.bugtracker.repository.MainRepository
 import timber.log.Timber
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -289,6 +289,37 @@ class MainViewModel @Inject constructor(
             withContext(Dispatchers.IO) {
                 mainRepository.loadIssuesForUser(id)
             }
+        }
+    }
+
+    fun addIssue(
+        name: String,
+        description: String,
+        date: Long,
+        assigneeId: Int?,
+        projectId: Int,
+        labelId: Int,
+    ) {
+        viewModelScope.launch {
+            mainRepository.addIssue(
+                name = name,
+                description = description,
+                date = date,
+                assigneeId = assigneeId,
+                projectId = projectId,
+                labelId = labelId
+            )
+        }
+    }
+
+    private val _users = MutableStateFlow(arrayListOf<User>())
+    val users = _users.asStateFlow()
+
+    fun getAssigneeList(projectId: Int) {
+        viewModelScope.launch {
+            _users.emit(
+                mainRepository.getUsersForProject(projectId)
+            )
         }
     }
 }

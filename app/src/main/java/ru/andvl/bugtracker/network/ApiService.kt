@@ -45,6 +45,12 @@ interface ApiService {
         email: String
     ): ApiResponse<String>
 
+    @GET("/projects/{id}/users")
+    suspend fun getProjectUsers(
+        @Path("id")
+        projectId: Int
+    ): ApiResponse<List<User>>
+
     @GET("/projects")
     suspend fun getProjects(
         @Query("userId")
@@ -81,6 +87,16 @@ interface ApiService {
         issue: Issue,
     ): ApiResponse<Issue>
 
+    @POST("/issues/{id}/update")
+    suspend fun updateIssue(
+        @Path("id")
+        projectId: Int,
+        @Query("issue")
+        issue: Issue,
+        @Query("status")
+        status: Int,
+    ): ApiResponse<Issue>
+
     @GET("/issues/{id}/comments")
     suspend fun getComments(
         @Path("id")
@@ -97,5 +113,5 @@ interface ApiService {
         date: Long,
         @Query("text")
         text: String,
-    )
+    ): ApiResponse<Comment>
 }

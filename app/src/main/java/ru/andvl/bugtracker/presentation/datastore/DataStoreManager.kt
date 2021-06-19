@@ -23,10 +23,13 @@ class DataStoreManager(context: Context) {
     }
 
     val currentUserId = runBlocking {
-        loginDataStore.data
+        Timber.d("cur user")
+        val id = loginDataStore.data
             .map { user ->
                 user[PreferencesKeys.CURRENT_USER_ID] ?: -1
             }.first()
+        Timber.d("$id")
+        id
     }
 
     suspend fun setLoginStatus(isLoggedIn: Int) {

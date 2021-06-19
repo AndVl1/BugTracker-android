@@ -2,9 +2,9 @@ package ru.andvl.bugtracker.presentation.ui.issues
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.skydoves.sandwich.suspendOnSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -12,8 +12,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.andvl.bugtracker.model.Comment
 import ru.andvl.bugtracker.model.Issue
-import ru.andvl.bugtracker.model.User
 import ru.andvl.bugtracker.repository.MainRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,10 +50,12 @@ class IssuesViewModel @Inject constructor(
 
     fun getIssues() {
         viewModelScope.launch {
-            mainRepository.getIssues()
-                .collect {
-                    _issuesList.emit(it)
-                }
+            withContext(Dispatchers.IO) {
+                mainRepository.getIssuesForUser()
+                    .collect {
+                        _issuesList.emit(it)
+                    }
+            }
         }
     }
 
@@ -66,6 +68,7 @@ class IssuesViewModel @Inject constructor(
         date: Long,
         assigneeId: Int?,
         projectId: Int,
+        labelId: Int,
     ) {
         viewModelScope.launch {
             _added.emit(false)
@@ -75,6 +78,7 @@ class IssuesViewModel @Inject constructor(
                 date = date,
                 assigneeId = assigneeId,
                 projectId = projectId,
+                labelId = labelId,
             )
         }
     }
@@ -82,33 +86,31 @@ class IssuesViewModel @Inject constructor(
     private val _selectedIssue: MutableStateFlow<Issue> =
         MutableStateFlow(
             Issue(
-                id = -1,
-                issueName = "",
-                description = "",
-                projectId = -1,
+                id = 1,
+                issueName = "NAME",
+                description = "d",
+                projectId = 1,
                 authorId = 1,
             )
         )
     val selectedIssue = _selectedIssue.asStateFlow()
-    private val _assignee: MutableStateFlow<User> =
-        MutableStateFlow(User(-1, "", ""))
-    val assignee = _assignee.asStateFlow()
 
     fun getIssue(id: Int) {
+        Timber.d("issue id $id")
         viewModelScope.launch {
-            mainRepository.getIssue(id)
-                .collect{
-                    _selectedIssue.emit(it)
-                }
+            _selectedIssue.emit(
+                mainRepository.getIssue(id)
+            )
         }
     }
 
-    fun getUser(id: Int) {
+    fun updateIssue(issue: Issue, statusId: Int) {
         viewModelScope.launch {
-            mainRepository.getUser(id)
-                .suspendOnSuccess {
-                    this.data?.let { _assignee.emit(it) }
-                }
+            mainRepository.updateIssueStatus(issue, statusId)
+            delay(500)
+            _selectedIssue.emit(
+                mainRepository.getIssue(issue.id)
+            )
         }
     }
 

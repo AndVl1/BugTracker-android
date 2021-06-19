@@ -1,14 +1,14 @@
 package ru.andvl.bugtracker.model
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 data class Comment(
-    @SerializedName("commentId")
+    @field:Json(name = "commentId")
     val id: Int,
-    @SerializedName("author")
+    @field:Json(name = "author")
     val author: User,
-    @SerializedName("text")
+    @field:Json(name = "text")
     val text: String,
-    @SerializedName("date")
+    @field:Json(name = "date")
     val publicationDate: Long,
 )

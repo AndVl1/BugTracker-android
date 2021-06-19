@@ -84,6 +84,8 @@ fun BugTrackerApp(
             AddIssue(
                 projectId = backStackEntry.arguments?.getInt("projectId") ?: -1,
                 viewModel = issuesViewModel,
+                navHostController = navController,
+                mainViewModel = mainViewModel,
             )
         }
         composable(
@@ -92,7 +94,8 @@ fun BugTrackerApp(
         ) { backStackEntry ->
             IssuePage(
                 viewModel = issuesViewModel,
-                issueId = backStackEntry.arguments?.getInt("issueId") ?: -1
+                issueId = backStackEntry.arguments?.getInt("issueId") ?: -1,
+                onBackPressed = { navController.popBackStack() }
             )
         }
     }

@@ -7,7 +7,7 @@ enum class Status(val value: Int) {
     TESTING(4),
     READY(5),
     CLOSED(6),
-    ERROR(1000);
+    ERROR(1000),
 }
 
 fun Status.toInt(): Int = when(this) {

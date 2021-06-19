@@ -46,7 +46,10 @@ private fun BottomNavBarConfiguration(
             ProfileScreen(viewModel = mainViewModel)
         }
         composable(BottomNavigationScreens.Tasks.route) {
-            IssueList(viewModel = issuesViewModel)
+            IssueList(
+                viewModel = issuesViewModel,
+                navHostController = mainNavController
+            )
         }
     }
 }
