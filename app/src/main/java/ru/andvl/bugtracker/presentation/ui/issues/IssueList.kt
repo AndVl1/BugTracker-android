@@ -95,12 +95,12 @@ fun IssueList(
             TopAppBar(title = { Text(text = "Bug Tracker") })
         },
     ) {
-        val filterExpanded = viewModel.isFilterExpanded.collectAsState()
+//        val filterExpanded = viewModel.isFilterExpanded.collectAsState()
         Column {
-            ExpandableCard(
-                onCardArrowClick = { viewModel.onArrowClicked() }, 
-                expanded = filterExpanded.value
-            )
+//            ExpandableCard(
+//                onCardArrowClick = { viewModel.onArrowClicked() },
+//                expanded = filterExpanded.value
+//            )
             LazyIssueColumn(
                 issues = viewModel.issuesList,
                 navHostController = navHostController
