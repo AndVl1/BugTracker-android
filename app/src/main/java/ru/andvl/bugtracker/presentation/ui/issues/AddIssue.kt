@@ -36,6 +36,7 @@ import ru.andvl.bugtracker.model.User
 import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.util.*
 
@@ -46,7 +47,6 @@ fun AddIssue(
     mainViewModel: MainViewModel,
     navHostController: NavHostController? = null,
 ) {
-
     val title = remember { mutableStateOf("") }
     val description = remember { mutableStateOf("") }
     val dateDialog = remember { MaterialDialog() }
@@ -110,7 +110,7 @@ fun AddIssue(
                         name = title.value,
                         description = description.value,
                         date = selectedDate.value
-                            ?.toInstant(ZoneOffset.UTC)?.epochSecond ?: -1,
+                            ?.toInstant(ZoneOffset.UTC)?.toEpochMilli() ?: -1,
                         assigneeId = assignee.value,
                         projectId = projectId,
                         labelId = labelId.value
@@ -210,12 +210,11 @@ private fun AddIssuePreview() {
     }
 
     assigneeDialog.build {
-
-            listItemsSingleChoice(
-                list = listOf()
-            ) { selected ->
-                assignee.value = selected
-            }
+        listItemsSingleChoice(
+            list = listOf()
+        ) { selected ->
+            assignee.value = selected
+        }
 
         buttons {
             positiveButton("Ok")
@@ -242,7 +241,9 @@ private fun AddIssuePreview() {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {}
+                onClick = {
+
+                }
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowForward,
@@ -253,7 +254,7 @@ private fun AddIssuePreview() {
         topBar = {
             TopAppBar(title = {
                 Text(
-                    text = "Preview"
+                    text = "Err"
                 )
             })
         }
@@ -299,6 +300,11 @@ private fun AddIssuePreview() {
                     Text(text = "Label")
                 }
             }
+            Text(
+                text =
+                "${selectedDate.value?.toInstant(ZoneOffset.UTC)?.toEpochMilli() }\n" +
+                        "${System.currentTimeMillis()}"
+            )
         }
     }
 }

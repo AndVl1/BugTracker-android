@@ -8,12 +8,6 @@ import com.squareup.moshi.Moshi
 import ru.andvl.bugtracker.utils.AssigneeConverter
 
 @Entity
-@TypeConverters(
-//    DateConverter::class,
-//    StatusConverter::class,
-//    LabelConverter::class,
-//    AssigneeConverter::class
-)
 data class Issue(
     @PrimaryKey
     @field:Json(name = "issueId")
