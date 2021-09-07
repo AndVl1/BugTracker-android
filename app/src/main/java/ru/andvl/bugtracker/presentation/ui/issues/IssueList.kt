@@ -2,7 +2,6 @@ package ru.andvl.bugtracker.presentation.ui.issues
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,7 +18,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,8 +29,6 @@ import ru.andvl.bugtracker.MainViewModel
 import ru.andvl.bugtracker.model.Issue
 import ru.andvl.bugtracker.navigation.Destinations
 import ru.andvl.bugtracker.presentation.ui.custom.BigCenteredText
-import ru.andvl.bugtracker.presentation.ui.custom.SubTitle
-import ru.andvl.bugtracker.presentation.ui.custom.Title
 
 // сверху - picker для фильтров по статусу и лейблу.
 // по умолчанию - показываются все
@@ -130,7 +126,8 @@ private fun LazyIssueColumn(
         ) {
             items(issuesState.value) { issue ->
                 IssueCard(
-                    id = issue.projectIssueNumber,
+                    id = issue.id,
+                    projectIssueId = issue.projectIssueNumber,
                     name = issue.issueName,
                     description = issue.description,
                     navController = navHostController,

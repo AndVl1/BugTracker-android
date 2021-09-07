@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -21,6 +20,7 @@ import ru.andvl.bugtracker.navigation.Destinations
 @Composable
 fun IssueCard(
     id: Int,
+    projectIssueId: Int,
     name: String,
     description: String,
     navController: NavController? = null
@@ -41,7 +41,7 @@ fun IssueCard(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                text = "#$id $name",
+                text = "#$projectIssueId $name",
                 fontWeight = FontWeight.Bold,
             )
             Text(
@@ -60,6 +60,7 @@ fun IssueCard(
 fun IssueCardPreview() {
     IssueCard(
         id = 1,
+        projectIssueId = 1,
         name = "Test",
         description = "Test description, writing quiet big text just to test" +
                 " if it will work correct for this big test aaabbb babbab b " +

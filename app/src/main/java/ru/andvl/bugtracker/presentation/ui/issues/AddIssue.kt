@@ -77,6 +77,7 @@ fun AddIssue(
             list = assigneeVariants.value.toList()
                 .map { user -> user.name }
         ) { selected ->
+            Timber.d(assigneeVariants.value.toList()[selected].toString())
             assignee.value = assigneeVariants.value.toList()[selected].userId
         }
 
