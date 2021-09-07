@@ -77,7 +77,7 @@ fun AddIssue(
             list = assigneeVariants.value.toList()
                 .map { user -> user.name }
         ) { selected ->
-            assignee.value = selected
+            assignee.value = assigneeVariants.value.toList()[selected].userId
         }
 
         buttons {

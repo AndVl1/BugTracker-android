@@ -49,7 +49,7 @@ object NetworkModule {
     fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl(if (BuildConfig.DEBUG) "http://10.0.2.2:5000" else "")
+            .baseUrl(if (BuildConfig.DEBUG) "http://10.0.2.2:5001" else "")
 //            .baseUrl(if (BuildConfig.DEBUG) "https://dbe024cca2ee8f.localhost.run" else "")
             .addConverterFactory(MoshiConverterFactory.create())
             .addCallAdapterFactory(CoroutinesResponseCallAdapterFactory())
